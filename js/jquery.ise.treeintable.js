@@ -53,7 +53,7 @@
 			self.tableNode=tableNode;
 			self.element.append(tableNode);
 			
-			var treetableArray = self.store.getItems();
+			var treetableArray = self.processStoreItemsBeforeBuildTable(self.store.getItems());
 			var count = treetableArray.length;
 			//count =3 ; // for debugging. set different values of count and start. e.g start=4, count=5, I can see the 5th elment
 			var start=0;
