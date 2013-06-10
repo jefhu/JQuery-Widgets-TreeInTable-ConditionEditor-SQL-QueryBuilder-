@@ -1,0 +1,71 @@
+
+.cpmTable{
+	border:1px solid #000000;
+}
+.cpmTable table {
+    font-size:12px;
+    border:1px solid #000000;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.cpmTable td {
+    vertical-align:middle; text-align:left;
+    border:1px solid #000000; 
+
+}
+
+.cpmTable th {
+    background: #F7F3F7;
+    border:1px solid #000000; 
+    font-weight: bold;
+}
+
+.cpmTable .cpmTable tr {
+    background: transparent;
+
+}
+
+.cpmTable .cpmTableExpendieCollapse{
+	font-size: 16;
+	font-weight: bold;
+}
+.cpmTable .cpmTableExpendieExpand{
+	font-size: 16;
+	font-weight: bold;
+}
+
+
+.cpmTable  .hideRepeaterItem{
+	display:none;
+}
+.cpmTable .unhideRepeaterItem{
+	display:"";
+}
+
+          
+.cpmTable .cpmtableItemNormal{
+	background-color: #FAF9F9;
+}
+
+/*
+ * alternate colors. say items from 1 to 5.
+ * r1,r3,r5  in .cpmtableItemOddRow
+ * r2, r4  in .cpmtableItemEvenRow
+ */
+.cpmTable   .cpmtableItemOddRow{
+	background-color:#FAF9F9;
+}
+
+.cpmTable  .cpmtableItemEvenRow{
+	background-color: #FAF9F9 ;
+}
+
+
+
+.cpmTable  .cpmtableItemHover{
+	background-color: #e4e5e6; /*hover cpmtable item */
+}
+
+.cpmTable  .cpmtableItemDown{
+	background-color: #c2cbd1;/*selected cpmtable item */
+}

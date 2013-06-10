@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>jQuery UI TreeInTable</title>
+        <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.7.2.custom.css">
+        <link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
+	</head>
+	<body>
+	    <div id="datastore1" class="datastore"></div>
+    	<div id="treeintable1" class="treeintable">Tree in Table</div>
+    	
+    	<script type="text/javascript" src="js/jquery191.js"></script>
+        <script type="text/javascript" src="js/jquery.ui.widget.js"></script>
+        <script type="text/javascript" src="js/jquery.ise.datastore.js"></script> 
+        <script type="text/javascript" src="js/jquery.ise.treeintable.js"></script>
+       
+        <script type="text/javascript">
+            var treeintableWidget= null;
+            var storeWidget= null;
+            
+            // build a store node and assign datastore plugin to it. Upon receiving datastore "complete" event, assign "treeintable" plugin
+            // to "#treeintable1" node.  Get treeintable plugin and run its buildTreeTable()
+            var store =$( "<div></div>" )
+		    .appendTo( "body" )
+		    .datastore({
+		    	url: "data/test1.json",
+		    	// once receives "complete" event from "datastore" object. carry on this function
+		        complete: function( event, data ) {
+		            console.log( "datastore build complete" );
+		            //instantiate "treeintable" object.
+		            var treeinTableNode =$("#treeintable1").treeintable({ store: store,
+						            	getProcessAttributes:function(storeAttributes){
+						            			//instance override the class api
+					                        	//console.log("instance option override getProcessAttributes()");
+											    return storeAttributes;
+											},
+						            	isToBuildExpandieBasedOnRank:function(){
+											   // use the idx=0 column to show expandie
+												return 0;
+											},
+		            					shouldThisAttributeHaveExpandie:function(attribute){
+						                       //instance override the class api
+						                        //console.log("instance option override shouldThisAttributeHaveExpandie()");
+						            			return false;
+						            		}
+		            	
+		            					});
+		            storeWidget= treeinTableNode.data("treeintable").store;  
+		            treeintableWidget=treeinTableNode.data("treeintable");
+		            treeintableWidget.decorateTablerow=function(cpmTableRow){
+		            	//instance level override the class api
+		            	//console.log("instance override decorateTablerow()");
+		            };
+		            treeintableWidget.onRowSelect=function(trNode){
+						console.log("TreeInColumnable-items onRowSelect()" + trNode.treetableArrayItem);
+						// for debugging. Test various api 
+						// storeWidget.getChildItemIndex(trNode.treetableArrayItem)
+						// storeWidget.getParentRowItem(trNode.treetableArrayItem)
+						// storeWidget.getSubTree(trNode.treetableArrayItem)
+						// storeWidget.getDirectChildren(trNode.treetableArrayItem)
+						// storeWidget.getParentRowItemsList(trNode.treetableArrayItem)
+						// storeWidget.getChildIndexOfParent(trNode.treetableArrayItem)
+						// storeWidget.getPreviousSiblingRowItem(trNode.treetableArrayItem);
+						// storeWidget.getNexeSiblingRowItem(trNode.treetableArrayItem);  
+						// storeWidget.getRootLevelRowItems()
+						//*/
+					},
+		            treeintableWidget.buildTreeTable();
+		        }
+		    });
+            
+        	
+		</script>
+	</body>
+</html>

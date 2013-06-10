@@ -1,0 +1,152 @@
+{
+    
+    "items": [
+        {
+            "continentName":"Asia",
+            "type":"continent",
+            "area":500,
+            "territories":{
+            	"items":[
+            			{
+            				"territoryName":"East Timor"
+            			},
+            			{
+            				"territoryName":"Guan Island"
+            			}
+            	]
+            },
+            "country":{
+                "items":[
+                    {
+                        "countryName":"China",
+                        "type":"country",
+                        "population":1300,
+                        "city": {
+                            
+                            "items":[
+                                {
+                                    "cityName":"HongKong" ,
+                                    "type":"city"
+                                } ,
+                                {
+                                    "cityName":"Beijing" ,
+                                    "type":"city"
+                                } ,
+                                {
+                                    "cityName":"Shanghai" ,
+                                    "type":"city"
+                                } 
+                            ] 
+                        } 
+                    } ,
+                    {
+                        "countryName":"India",
+                        "type":"country",
+                        "population":1000,
+                        "city": {
+                            "items":[
+                                {
+                                    "cityName":"New Dehli" ,
+                                    "type":"city"
+                                } ,
+                                {
+                                    "cityName":"Bangalore" ,
+                                    "type":"city"
+                                }
+                            ] 
+                        } 
+                    } 
+                ] 
+            } 
+        } ,
+        {
+            "continentName":"Africa",
+            "type":"continent",
+            "area":500,
+            "country":{
+                "items":[
+                    {
+                        "countryName":"Egypt",
+                        "type":"country",
+                        "population":100,
+                        "city": {
+                            "items":[
+                                {
+                                    "cityName":"Cairo" ,
+                                    "type":"city"
+                                } ,
+                                {
+                                    "cityName":"Alexandria" ,
+                                    "type":"city"
+                                } 
+                            ] 
+                        } 
+                    } ,
+                    {
+                        "countryName":"South Africa",
+                        "type":"country",
+                        "population":200,
+                        "city": {
+                 			
+                            "items":[
+                                {
+                                    "cityName":"Johannesberg" ,
+                                    "type":"city"
+                                } 
+                            ] 
+                        } 
+                    } 
+                ] 
+            } 
+        } ,
+        {
+            "continentName":"North America",
+            "type":"continent",
+            "area":400,
+            "country":{
+                 
+                "items":[
+                    {
+                        "countryName":"U.S.A",
+                        "type":"country",
+                        "population":300,
+                        "city": {
+                            "items":[
+                                {
+                                    "cityName":"New York" ,
+                                    "type":"city"
+                                } ,
+                                {
+                                    "cityName":"Los Angels" ,
+                                    "type":"city"
+                                } ,
+                                {
+                                    "cityName":"Chicago" ,
+                                    "type":"city"
+                                } 
+                            ] 
+                        } 
+                    } ,
+                    {
+                        "countryName":"Canada",
+                        "type":"country",
+                        "population":30,
+                        "city": {
+                             
+                            "items":[
+                                {
+                                    "cityName":"Toronto" ,
+                                    "type":"city"
+                                } ,
+                                {
+                                    "cityName":"Vancourver" ,
+                                    "type":"city"
+                                } 
+                            ] 
+                        } 
+                    } 
+                ] 
+            } 
+        } 
+    ]
+}
