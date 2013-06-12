@@ -49,9 +49,11 @@
 			if (this._debug) console.log("treeintable.buildTreeTable()");
 			var self = this;
 			
-			var tableNode = $("<table class='cpmTable' id=" + self.id + "></table>");
+			var tableNode = this.buildTableDomNode();//$("<table class='cpmTable' id=" + self.id + "></table>");
+			this.tableNode = tableNode;
 			self.tableNode=tableNode;
 			self.element.append(tableNode);
+			self.buildTableColumnHeaders();
 			
 			var treetableArray = self.processStoreItemsBeforeBuildTable(self.store.getItems());
 			var count = treetableArray.length;
@@ -64,7 +66,41 @@
 			self.onTableCreationComplete();
 		},//end function
 		
+		buildTableDomNode:function(){
+		// summary:
+		// Override-able api for application to "table" 
+        // application can do something like
+		// <div class="top">   
+		//		<div class="toolbar">
+		//	  		<table class='cpmTable'/>
+		//		</div>
+		// </div>
+		// make sure this api return the "table" element.  Assign this.myDiv to  "top" div. 
+			return $("<table class='cpmTable' id=" + this.id + "></table>");
+		},
 		
+		buildTableColumnHeaders:function(){
+		// summary:
+		// The api to build table headers.
+		// This function calls getHeaderDisplayNames() to get a list of column header names. Then loop the list to insert table-header nodes.
+		// Application should consider override this API to build customized table-headers.
+			var headers =this.getHeaderDisplayNames();
+			for (var i=0;i<headers.length;i++){
+				var thNode = document.createElement("th");
+				thNode.innerHTML = headers[i];
+				this.tableNode.append(thNode);
+			}
+		},
+
+		getHeaderDisplayNames:function(){
+		//summary:
+		// Overide-able api to a list to table header display names;
+		// Applicaiton must override this api. 
+		// var table = new Table ( { id="table1', getHeaderDisplayNames:function()={ return ['a', 'b']}});
+			
+			return [];
+			
+		},
 		
 		onTableCreationComplete:function(){
 		// summary:

@@ -1,0 +1,196 @@
+{
+    "items": [
+        {
+            "id": "NA",
+            "name": "North America",
+            "population": 534051188,
+            "area": 23083151,
+            "type": "continent",
+            "children": [
+                {
+                    "id": "N1",
+                    "name": "Mexico",
+                    "population": 111211789,
+                    "area": 1923040
+                },
+                {
+                    "id": "N2",
+                    "name": "United States",
+                    "population": 307212123,
+                    "area": 9161923
+                },
+                {
+                    "id": "N3",
+                    "name": "Canada",
+                    "population": 33487208,
+                    "area": 9093507
+                }
+            ]
+        },
+        {
+            "id": "SA",
+            "name": "South America",
+            "population": 392366329,
+            "area": 17433220,
+            "type": "continent",
+            "children": [
+                {
+                    "id": "S1",
+                    "name": "Bolivia",
+                    "population": 9775246,
+                    "area": 1084390
+                },
+                {
+                    "id": "S2",
+                    "name": "Guyana",
+                    "population": 752940,
+                    "area": 196850
+                },
+                {
+                    "id": "S3",
+                    "name": "Venezuela",
+                    "population": 26814843,
+                    "area": 882050
+                },
+                {
+                    "id": "S4",
+                    "name": "Argentina",
+                    "population": 40913584,
+                    "area": 2736690
+                }
+            ]
+        },
+        {
+            "id": "AS",
+            "name": "Asia",
+            "population": 4088647780,
+            "area": 30938605,
+            "type": "continent",
+            "children": [
+                {
+                    "id": "A1",
+                    "name": "China",
+                    "population": 1338612968,
+                    "area": 9326410
+                },
+                {
+                    "id": "A2",
+                    "name": "Afghanistan",
+                    "population": 28395716,
+                    "area": 647500
+                },
+                {
+                    "id": "A3",
+                    "name": "Russia",
+                    "population": 140041247,
+                    "area": 16995800
+                },
+                {
+                    "id": "A4",
+                    "name": "Kazakhstan",
+                    "population": 15399437,
+                    "area": 2669800
+                }
+            ]
+        },
+        {
+            "id": "EU",
+            "name": "Europe",
+            "population": 728227141,
+            "area": 22832227,
+            "type": "continent",
+            "children": [
+                {
+                    "id": "E1",
+                    "name": "Belarus",
+                    "population": 9648533,
+                    "area": 207600
+                },
+                {
+                    "id": "E2",
+                    "name": "Luxembourg",
+                    "population": 491775,
+                    "area": 2586
+                },
+                {
+                    "id": "E3",
+                    "name": "Italy",
+                    "population": 58126212,
+                    "area": 294020
+                },
+                {
+                    "id": "E4",
+                    "name": "Bosnia and Herzegovina",
+                    "population": 4613414,
+                    "area": 51197
+                }
+            ]
+        },
+        {
+            "id": "OC",
+            "name": "Oceania",
+            "population": 34685745,
+            "area": 8426635,
+            "type": "continent",
+            "children": [
+                {
+                    "id": "O1",
+                    "name": "New Zealand",
+                    "population": 4213418,
+                    "area": 268021
+                },
+                {
+                    "id": "O2",
+                    "name": "Australia",
+                    "population": 21262641,
+                    "area": 7617930
+                }
+            ]
+        },
+        {
+            "id": "AF",
+            "name": "Africa",
+            "population": 990189529,
+            "area": 29805695,
+            "type": "continent",
+            "children": [
+                {
+                    "id": "AF1",
+                    "name": "Somalia",
+                    "population": 9832017,
+                    "area": 627337
+                },
+                {
+                    "id": "AF2",
+                    "name": "Egypt",
+                    "population": 78866635,
+                    "area": 995450
+                },
+                {
+                    "id": "AF3",
+                    "name": "Rwanda",
+                    "population": 10746311,
+                    "area": 24948
+                },
+                {
+                    "id": "AF4",
+                    "name": "Madagascar",
+                    "population": 20653556,
+                    "area": 581540
+                },
+                {
+                    "id": "AF5",
+                    "name": "Angola",
+                    "population": 12799293,
+                    "area": 1246700,
+                    "children": {
+                        "id": "Ang0",
+                        "name": "Some City",
+                        "population": 200,
+                        "area": 10
+                    }
+                }
+            ]
+        }
+    ]
+}

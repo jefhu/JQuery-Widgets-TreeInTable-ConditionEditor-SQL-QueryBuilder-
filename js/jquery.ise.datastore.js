@@ -22,7 +22,7 @@
 		
 		_create: function() {
 			var self = this;
-			if (this.debug)console.log("ise.datastore._create() called");
+			if (this._debug)console.log("ise.datastore._create() called");
 			if (self.options.data){
 				self.data=self.options.data ;
 				self.buildStoreFromJsonObject(self.options.data);
@@ -152,7 +152,7 @@
 		// summary:
 		// prepare data to call buildStoreFromJsonObject() api
 			var self=this;
-			if (this.debug)console.log("ise.datastore._buildStore()");
+			if (this._debug)console.log("ise.datastore._buildStore()");
 			var data = self.options.storedata;
 			this.data=data;
 			self.buildStoreFromJsonObject(data);
@@ -162,7 +162,7 @@
 		// summary:
 		// key function to build store model. 
 			var self=this;
-			if (this.debug)console.log("ise.datastore.buildStoreFromJsonObject()");
+			if (this._debug)console.log("ise.datastore.buildStoreFromJsonObject()");
 			var self=this;
 			this.store.dataitems =new Array();
 			var treepathArray =self.store.dataitems
@@ -208,7 +208,7 @@
 		//			}
 		// This api return a list of 400 items
 			var self = this;
-			if (this.debug) console.log("ise.datastore.getItems() called");
+			if (this._debug) console.log("ise.datastore.getItems() called");
 			return this.store.dataitems;
 		},//end function
 		
