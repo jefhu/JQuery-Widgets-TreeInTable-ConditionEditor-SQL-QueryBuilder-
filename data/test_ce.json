@@ -1,0 +1,55 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "LogicalExpression",
+                "operator": "||",
+                "left": {
+                    "type": "BinaryExpression",
+                    "operator": "==",
+                    "left": {
+                        "type": "Identifier",
+                        "name": "priority"
+                    },
+                    "right": {
+                        "type": "Literal",
+                        "value": 5,
+                        "raw": "5"
+                    }
+                },
+                "right": {
+                    "type": "LogicalExpression",
+                    "operator": "&&",
+                    "left": {
+                        "type": "BinaryExpression",
+                        "operator": "==",
+                        "left": {
+                            "type": "Identifier",
+                            "name": "souceIp"
+                        },
+                        "right": {
+                            "type": "Literal",
+                            "value": "1.2.2.3",
+                            "raw": "\"1.2.2.3\""
+                        }
+                    },
+                    "right": {
+                        "type": "BinaryExpression",
+                        "operator": "==",
+                        "left": {
+                            "type": "Identifier",
+                            "name": "device"
+                        },
+                        "right": {
+                            "type": "Literal",
+                            "value": "router",
+                            "raw": "\"router\""
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

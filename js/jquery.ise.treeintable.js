@@ -23,6 +23,9 @@
 			var self = this;
 			if (self._debug) console.log("treeintable._create()");
 			self.store = self.options.store.data(self._DATASTORE);
+			if (null == self.store){
+				self.store = self.options.store.data("iseDatastore");
+			}
 			if (self.options.debug) { self._debug =(self.options.debug)};
 			self.id = (self.options.id)? self.options.id:"ise.treeintable_"+(new Date()).getTime();
 		}, // _create
@@ -96,10 +99,8 @@
 		//summary:
 		// Overide-able api to a list to table header display names;
 		// Applicaiton must override this api. 
-		// var table = new Table ( { id="table1', getHeaderDisplayNames:function()={ return ['a', 'b']}});
-			
-			return [];
-			
+		// var table = new Table ( { id="table1', getHeaderDisplayNames:function()={ return ['a', 'b']}});			
+			return [];			
 		},
 		
 		onTableCreationComplete:function(){
@@ -213,7 +214,20 @@
 					cpmtable.oncpmtableRowNodeMouseOut(e.currentTarget);
 				}
 			};
+			cpmtableRowNode.ondblclick = function(e){
+				if (!e) return;
+				var cpmtable = e.currentTarget.table;
+				if(cpmtable){
+					cpmtable.oncpmtableRowNodeDoubleClick(e.currentTarget);
+				}
+			};
 			return cpmtableRowNode;
+		},
+		
+		oncpmtableRowNodeDoubleClick: function(cpmtableRowNode) {
+		// summary:
+		// mouse double click handler
+			console.log("double click on\n" +JSON.stringify(this.getTreeNodeJSON(this.selectedRow), null, 5));
 		},
 
 		oncpmtableRowNodeMouseOver : function(cpmtableRowNode) {
@@ -229,7 +243,7 @@
 	    	// summary:
 			// 	Mouse out handler.
 			
-	        $(cpmtableRowNode).removeClass('cpmtableItemHover');
+	        //$(cpmtableRowNode).removeClass('cpmtableItemHover');
 	        $(cpmtableRowNode).removeClass('cpmtableItemHover');
 	        $(cpmtableRowNode).addClass('cpmtableItemNormal');
 	    },
@@ -315,6 +329,7 @@
 			var tdNdoe = document.createElement("td");
 			tdNdoe.appendChild(spaceNode);
 			tdNdoe.appendChild(columnNode);
+			 
 			itemDiv.appendChild(tdNdoe);
 		},
 		
@@ -365,16 +380,19 @@
 						var columnNode = document.createElement("td");
 						var newText = document.createTextNode(values);
 						columnNode.title = attributes[j] + " : " + values;
+						//var spaceNode =this.buildIndentSpaceForDataRow (columnNode, treetableArrayItem);
 						if (this.shouldThisAttributeHaveExpandie(attributes[j])){
 							if (this.isParentItem(treetableArrayItem.dataItem) ) {
 								this.buildIndentSpaceForDataRow (columnNode, treetableArrayItem);
 		                    	this.buildDataRowExpandie(columnNode, treetableArrayItem, treetableArray,store,repeaterItem);
+		                    	trNode.expandieTdNode = columnNode;
 							}else{
 								this.buildIndentSpaceForDataRow (columnNode, treetableArrayItem);
 							}
 						}else if (this.isToBuildExpandieBasedOnRank()==attributeIndex){
 							this.buildIndentSpaceForDataRow (columnNode, treetableArrayItem);
 		                    this.buildDataRowExpandie(columnNode, treetableArrayItem, treetableArray,store,repeaterItem);
+		                    trNode.expandieTdNode = columnNode;
 						}
 						$(columnNode).append(newText);
 						$(trNode).append(columnNode);
@@ -490,7 +508,9 @@
 			// build indent space for repeaterItem
 			var spaceNode = document.createElement("span");
 			spaceNode.innerHTML= this.getIndentSpace(treetableArrayItem.indentLevel);
-			itemDiv.appendChild(spaceNode);//$(itemDiv).append(spaceNode);   
+			itemDiv.spaceNode = spaceNode;
+			itemDiv.appendChild(spaceNode);//$(itemDiv).append(spaceNode);  
+			return spaceNode;
 		},
 		
 		getIndentSpace:function (indentLevel){
@@ -521,7 +541,9 @@
 				expandieWidget.treetableArrayItem=treetableArrayItem;
 				expandieWidget.id = trNode.id+"_expandie";
 				trNode.expandieWidgetId= expandieWidget.id;
+				trNode.expandieWidget= expandieWidget;
 				expandieWidget.rowId = trNode.id;
+				
 				this.setExpandieUI(expandieWidget);
 				tdNode.appendChild(expandieWidget);
 				expandieWidget.onclick =function(e){
@@ -586,6 +608,12 @@
 			return 0;
 		},
 
+		getAllHeaderNodes:function(){
+		//Summary:
+		//Get all "TH" nodes
+			return $(cpmTable.tableNode).find('th');
+		},
+		
 		getAllRowNodes:function(){
 		// Summary
 		// Helper function to get all rows of the table
@@ -594,7 +622,7 @@
 				var children = new Array();
 				var thNtrNodes = $(cpmTable.tableNode).find('tr');
 				for (var i=0;i<thNtrNodes.length;i++){
-					if (thNtrNodes[i].tagName.toLowerCase()=="tr"){
+					if (thNtrNodes[i].tagName.toLowerCase()=="tr" && thNtrNodes[i].treetableArrayItem ){
 						children.push(thNtrNodes[i]);
 					}
 				}
@@ -618,10 +646,10 @@
 					if (currentRowItem.treetableArrayItem.indentLevel>cpmTableRow.treetableArrayItem.indentLevel){
 						if (expandieWidget.treetableArrayItem.expanded){
 							$(currentRowItem).removeClass(cpmTable.getDataRowShowHideClass(!expandieWidget.treetableArrayItem.expanded));
-							$(currentRowItem).addClass(cpmTable.getDataRowShowHideClass(expandieWidget.treetableArrayItem.expanded));
+							$(currentRowItem).addClass(cpmTable.getDataRowShowHideClass(expandieWidget.treetableArrayItem.expanded));						
 						}else{
 							$(currentRowItem).removeClass(cpmTable.getDataRowShowHideClass(!expandieWidget.treetableArrayItem.expanded));
-							$(currentRowItem).addClass(cpmTable.getDataRowShowHideClass(expandieWidget.treetableArrayItem.expanded));
+							$(currentRowItem).addClass(cpmTable.getDataRowShowHideClass(expandieWidget.treetableArrayItem.expanded));							 
 						}
 					}else{
 						break;
@@ -696,7 +724,7 @@
 		// summary:
 	    // API that style the expandie
 				
-				expandieWidget.innerHTML=(expandieWidget.treetableArrayItem.expanded)? "&#9660;":"&#9658;";
+				expandieWidget.innerHTML= this.getExpandieWidgetInnerHTMLText(expandieWidget);
 				
 				if (expandieWidget.treetableArrayItem.expanded){
 					$(expandieWidget).removeClass("cmpTableExpendieCollapse");
@@ -707,6 +735,10 @@
 					$(expandieWidget).removeClass("cmpTableExpendieCollapse");
 				}
 				
+		},
+		
+		getExpandieWidgetInnerHTMLText :function(expandieWidget){
+			return (expandieWidget.treetableArrayItem.expanded)? "&#9660;":"&#9658;";
 		},
 		
 		
@@ -736,8 +768,8 @@
 			return storeAttributes;
 		},//end function
 				
-		destroy: function() {			
-			this.element.next().remove();
+		_destroy: function() {			
+			this.element.remove();
 		},//end function
 		
 		_setOption: function(option, value) {
@@ -752,6 +784,327 @@
 	        	this._super( key, value );
 	        }
 	    },//end function
+	    
+	    setTreetableDrag:function(){
+	    	var children = this.getAllRowNodes();
+			for (var i=0; i<children.length;i++){
+				children[i].treeintableWidget = this;
+				$(children[i]).each(function(index, obj) {
+					
+					$(obj).draggable({
+						  helper: "clone",
+						  opacity: .75,
+						  refreshPositions: true,
+						  revert: "invalid",
+						  revertDuration: 300,
+						  scroll: true,
+						  containment:  obj.treeintableWidget.getDragContainment()  // '.cpmTable'
+						});
+				});
+			}
+	    },
+	    
+	    setTreetableDrop:function(){
+	    	var children = this.getAllRowNodes();
+			for (var i=0; i<children.length;i++){
+				children[i].treeintableWidget = this;
+				$(children[i]).each(function(index, obj) {
+					//console.log(obj);
+					$(obj).droppable({
+					   // accept: ".cpmtableItemNormal",
+					    accept: function( draggable, droppable){
+					    	var treeintableWidget = obj.treeintableWidget;
+					    	return treeintableWidget.checkIfRowItemIsDraggable();
+					    },
+					    drop: function(e, ui) {
+					      var dragEl = ui.draggable[0];  // get the on-the-drag tr
+					      var treeintableWidget = dragEl.treeintableWidget;
+					      var dropToNode = this;  // here "this" is the drop-to tr. 
+					      //check dragEl can not be dropped to its subTree() list.
+					      if(treeintableWidget.checkIfRowItemCanDropHere(dragEl ,dropToNode)){
+					         treeintableWidget.moveTreeNode(dragEl, dropToNode );
+					      }
+					       
+					    },
+					    hoverClass: "accept",
+					    over: function(e, ui) {
+					    	var dragEl = ui.draggable[0];  // get the on-the-drag tr
+					    	var treeintableWidget = dragEl.treeintableWidget;
+						    var dropToNode = this;  // here "this" is the drop-to tr. 
+						    if (!dropToNode.treetableArrayItem.isLeafNode && ! dropToNode.treetableArrayItem.expanded){
+						    	treeintableWidget.expandOrCollapseByRowitem(dropToNode, dropToNode.expandieWidget);
+						    }					     
+					    }
+					});
+				});
+			}
+	    },
+	    
+	    setTreetableDragAndDrop:function(){
+	    	this.setTreetableDrag();
+	    	this.setTreetableDrop();
+	    },
+	    
+	    getDragContainment:function(){
+	    	return ".cpmTable";
+	    }, 
+	    
+	    moveTreeNode:function(dragEl, dropToNode ){
+	    //Summary:
+	    //Move dragEl and it's subTree under dropToNode.  
+	    //Notice that we have to re-compute the rows indent level	    
+	    	
+	    	 // compute indentDiff
+	    	var indentDiff = dropToNode.treetableArrayItem.indentLevel  - dragEl.treetableArrayItem.indentLevel;
+	    	  
+	    	 // get the subTree first
+	    	 var subTree = this.getSubTree(dragEl);
+	    	 
+	    	 // handle the dragEl
+	    	 this.updateIndentLevel(dragEl, dropToNode.treetableArrayItem.indentLevel);
+	    	 dragEl.parentNode.removeChild(dragEl);
+		     dropToNode.parentNode.insertBefore( dragEl, dropToNode);
+		     this.moveTreeNodeAnimation(dragEl);
+	    	 // handle the subTree 
+		     for( var i=0; i<subTree.length;i++){
+		    	 var currentRowItem = subTree[i];
+		    	 this.updateIndentLevel(currentRowItem, currentRowItem.treetableArrayItem.indentLevel + indentDiff);
+		    	currentRowItem.parentNode.removeChild(currentRowItem);
+			    dropToNode.parentNode.insertBefore( currentRowItem, dropToNode);
+			    this.moveTreeNodeAnimation(currentRowItem);
+		     }
+	    },
+	    
+	    moveTreeNodeAnimation:function(currentRowItem){
+	    	$(currentRowItem).fadeOut();
+		    $(currentRowItem).fadeIn();
+	    },
+	    
+	    
+	    checkIfRowItemIsDraggable:function(rowItem){
+	    // Summary:
+	    // API to check if given "rowItem" is draggable.  
+	    	return true;
+	    },
+	    
+	    checkIfRowItemCanDropHere:function(dragEl ,dropToNode){
+	    // Summary:
+	    // This is an API used in Drag-and-Drop.  It controls if the "dragged" not can drop into the "dropNode"
+	    // This implementation block parent tree-node dropping to any of it's subTree 
+	    	  var subTree = this.getSubTree(dragEl);
+		      var index = this._findItemIndexFromList(subTree, dropToNode);
+		      return  (index <0);
+	    },
+	    
+	    updateIndentLevel:function (rowItem, indentLevel){
+	    //summary:
+	    // update given rowItem's indentLevel property
+	    	
+	    	rowItem.treetableArrayItem.indentLevel = indentLevel;	    	 
+	    	var spaceNode = this.getSpaceNode(rowItem); 
+	    	spaceNode.innerHTML=this.getIndentSpace(rowItem.treetableArrayItem.indentLevel);
+	    },
+	    
+	    getSpaceNode:function(rowItem){
+	    	return  rowItem.firstElementChild.firstElementChild;
+	    },
+	    
+	    getSubTree: function(rowItem) {
+	        // summary:
+	        // get the list of items.  
+	        // How it works
+	        // Say given rowItem is in 5th row in the entire list.  Row from 6 to 10 are under rowItem. So, row 11 will have
+	        // the same indentLevel as rowItem.  This API find rowItem index of the list which is 5, return a list containing rows from 6-10.
+
+	        var subTree = [];
+	        var children = this.getAllRowNodes();
+	        var rowItemIndex = this.getRowIndexByRowNode(rowItem);
+	        for (var i = rowItemIndex + 1; i < children.length; i++) {
+	            var currentRowItem = children[i];
+	            if (currentRowItem && currentRowItem.treetableArrayItem && rowItem && currentRowItem.treetableArrayItem.indentLevel > rowItem.treetableArrayItem.indentLevel) {
+	                subTree.push(currentRowItem);
+	            } else {
+	                break;
+	            }
+	        }
+	        return subTree;
+	    },
+	    
+	    _findItemIndexFromList: function(rowItems, rowItem) {
+	        // summary:
+	        //
+	        var idx = -1;
+	        for (var i = 0; i < rowItems.length; i++) {
+	            if (rowItems[i] == rowItem) {
+	                return i;
+	            }
+	        }
+	        return idx;
+	    },
+
+	    getChildItemIndex: function(rowItem) {
+	        //summary:
+	        // Find the index number of.  Say [... rowItem..], rowItem is the in the i th row.  This api return i
+	        var idx = -1;
+	        var rowItems = this.getAllRowNodes();
+	        return this._findItemIndexFromList(rowItems, rowItem);
+
+	    },
+	    
+	    getRootLevelRowItems: function() {
+	        // summary:
+	        // Get a list of root level rowItem
+	        var list = [];
+	        var children = this.getAllRowNodes();
+	        for (var i = 0; i < children.length; i++) {
+	            var currentRowItem = children[i];
+	            if (currentRowItem && currentRowItem.treetableArrayItem && currentRowItem.treetableArrayItem.indentLevel == 0) {
+	                list.push(currentRowItem);
+	            }
+	        }
+	        return list;
+	    },
+	    
+	    getItems:function(){
+	    	return this.getAllRowNodes();
+	    },
+	    
+	    
+	    
+	    getChildAt: function(idx) {
+	    	// summary:
+	    	// get the "idx" th tree-node
+	    	
+	        return this.getItems()[idx];
+	    },
+	    
+	    getParentRowItem: function(rowItem) {
+	        // summary:
+	        // Internal api to retrieve the Parent-DataItem's rowItem
+	        // For example
+	        // "city": {   
+	        //                "items":[
+	        //                    {
+	        //                        "cityName":"HongKong" 
+	        //                    } ,
+	        //                    {
+	        //                        "cityName":"Beijing" 
+	        //                    } ,
+	        //                    {
+	        //                        "cityName":"Shanghai" 
+	        //                    } 
+	        //                ] 
+	        //            } 
+	        //  If I am in "HongKong" level rowItem, this api will return "items" level rowItem
+	        var idx = this.getChildItemIndex(rowItem);
+	        for (var i = (idx - 1); i >= 0; i--) {
+	            var currentRowItem = this.getChildAt(i);
+	            if (currentRowItem.treetableArrayItem.indentLevel < rowItem.treetableArrayItem.indentLevel) {
+	                return currentRowItem;
+	            }
+
+	        }
+	        return null;
+	    },
+	    
+	    getDirectChildren: function(rowItem) {
+	        // summary:
+	        // get direct children rows of given rowItem.
+	        // Say given rowItem is in 5th row in the entire list.  Row from 6 to 10 are under rowItem. Say row-6 and row-8 are 
+	        // immediate children of rowItem. This function return [row-6, row-8]
+	        // In this case, row-6.treetableArrayItem.indentLevel==rowItem.treetableArrayItem.indentLevel+1
+
+	        var directChildren = [];
+	        var children = this.getSubTree(rowItem);
+	        for (var i = 0; i < children.length; i++) {
+	            var currentRowItem = children[i];
+	            if (currentRowItem && currentRowItem.treetableArrayItem && currentRowItem.treetableArrayItem.indentLevel == rowItem.treetableArrayItem.indentLevel + 1) {
+	                directChildren.push(currentRowItem);
+	            }
+	        }
+
+	        return directChildren;
+	    },
+	    
+	    getParentRowItemsList: function(rowItem) {
+	        // summary:
+	        // get a list containing rowItem's parent-row, grand-parent-row.. root
+	        var list = new Array();
+	        var myParent = this.getParentRowItem(rowItem);
+	        while (myParent) {
+	            list.push(myParent);
+	            myParent = this.getParentRowItem(myParent);
+	        }
+	        return list;
+	    },
+	    
+	    getChildIndexOfParent: function(rowItem) {
+	        // summary:
+	        // Given a rowItem, find out rowItem is the n-th child of rowItem's parent
+	        var idx = -1;
+	        var myParent = this.getParentRowItem(rowItem);
+	        if (myParent) {
+	            var children = this.getDirectChildren(myParent);
+	            for (var i = 0; i < children.length; i++) {
+	                if (children[i] == rowItem) return i;
+	            }
+	        } else {
+	            var rootList = this.getRootLevelRowItems();
+	            return this._findItemIndexFromList(rootList, rowItem);
+	        }
+	        //return idx;
+	    },
+	    
+	    getPreviousSiblingRowItem: function(rowItem) {
+	        // summary:
+	        // get previous sibling RowItem
+
+	        var parent = this.getParentRowItem(rowItem);
+	        if (parent) {
+	            var siblings = this.getDirectChildren(parent);
+	            var myIndex = this.getChildIndexOfParent(rowItem);
+	            //if(this.boolDebug) console.log("getPreviousSiblingRowItem myIndex of parent " , myIndex, siblings[myIndex-1]);
+	            return (siblings[myIndex - 1]) ? siblings[myIndex - 1] : null;
+	        }
+	        return null;
+	    },
+
+	    getNexeSiblingRowItem: function(rowItem) {
+	        // summary:
+	        // get next sibling row
+	        var parent = this.getParentRowItem(rowItem);
+	        var siblings = this.getDirectChildren(parent);
+	        var myIndex = this.getChildIndexOfParent(rowItem);
+	        if (this.boolDebug) console.log("getNexeSiblingRowItem myIndex of parent ", myIndex, siblings[myIndex + 1]);
+	        return (siblings[myIndex + 1]) ? siblings[myIndex + 1] : null;
+	    },
+	    
+	    _removeUnwantedAttribute:function(obj, unwartedAttributeList){
+	    	 for (var i = 0; i < unwartedAttributeList.length; i++) {
+	    		 delete obj[unwartedAttributeList[i]];
+	          }
+	    	 return obj;
+	    }, 
+	    
+	    getUnwantedAttributeListWhenClone:function(){
+	    	var unwartedAttributeList =['children'];
+	    	return unwartedAttributeList;
+	    },
+	    
+	    getTreeNodeJSON:function(rowItem){
+	    	var cloned = JSON.parse(JSON.stringify(rowItem.treetableArrayItem.dataItem));
+	    	cloned = this._removeUnwantedAttribute(cloned, this.getUnwantedAttributeListWhenClone());
+	    	var mychildren = this.getDirectChildren(rowItem);
+	    	if (mychildren.length >0){
+	    		var children = [];
+	    		 for (var i = 0; i < mychildren.length; i++) {
+	    			 var clonedChild = this.getTreeNodeJSON(mychildren[i]);
+	    			 children.push(clonedChild);
+	    		 }
+	    		 cloned["children"]= children;
+	    	}
+	    	return cloned;
+	    },
 	    
 	    dummy:null
 		

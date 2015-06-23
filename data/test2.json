@@ -17,13 +17,41 @@
                     "id": "N2",
                     "name": "United States",
                     "population": 307212123,
-                    "area": 9161923
+                    "area": 9161923,
+                    "children": [
+                  	   {
+	                        "id": "N2-1",
+	                        "name": "New York",
+	                        "population": 10000,
+	                        "area": 100
+                    	},
+                    	{
+	                        "id": "N2-2",
+	                        "name": "San Francisco",
+	                        "population": 500,
+	                        "area": 200
+                    	}
+                    ]
                 },
                 {
                     "id": "N3",
                     "name": "Canada",
                     "population": 33487208,
-                    "area": 9093507
+                    "area": 9093507,
+                    "children": [
+                  	   {
+	                        "id": "N3-1",
+	                        "name": "Toronto",
+	                        "population": 10000,
+	                        "area": 100
+                    	},
+                    	{
+	                        "id": "N3-2",
+	                        "name": "Vancouver",
+	                        "population": 500,
+	                        "area": 200
+                    	}
+                    ]
                 }
             ]
         },
@@ -71,7 +99,21 @@
                     "id": "A1",
                     "name": "China",
                     "population": 1338612968,
-                    "area": 9326410
+                    "area": 9326410,
+                    "children": [
+                  	   {
+	                        "id": "A1-1",
+	                        "name": "Shanghai",
+	                        "population": 10000,
+	                        "area": 130
+                    	},
+                    	{
+	                        "id": "A1-2",
+	                        "name": "Beijing",
+	                        "population": 50000,
+	                        "area": 201
+                    	}
+                    ]
                 },
                 {
                     "id": "A2",
@@ -183,12 +225,20 @@
                     "name": "Angola",
                     "population": 12799293,
                     "area": 1246700,
-                    "children": {
-                        "id": "Ang0",
-                        "name": "Some City",
-                        "population": 200,
-                        "area": 10
-                    }
+                    "children": [
+                  	   {
+	                        "id": "Ang0",
+	                        "name": "Some City 1",
+	                        "population": 200,
+	                        "area": 10
+                    	},
+                    	{
+	                        "id": "Ang1",
+	                        "name": "Some City 2",
+	                        "population": 500,
+	                        "area": 20
+                    	}
+                    ]
                 }
             ]
         }

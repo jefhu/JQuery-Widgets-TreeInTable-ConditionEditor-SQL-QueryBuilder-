@@ -3,17 +3,17 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>jQuery UI TreeInTable</title>
-        <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.7.2.custom.css">
+        <link href="jquery-ui-1.11.4/jquery-ui.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
 	</head>
 	<body>
 	    <div id="datastore1" class="datastore"></div>
-    	<div id="treeintable1" class="treeintable">Tree in Table 1 - each layer has own column structure</div>
-    	<div id="treeintable2" class="treeintable">Tree in Table 2 - tree in table</div>
-    	<div id="treeintable3" class="treeintable">Tree in Table 2 - tree only</div>
+    	<div id="treeintable1" class="treeintable">Tree in Table 1 - each layer has own column structure</div><br/>
+    	<div id="treeintable2" class="treeintable">Tree in Table 2 - tree in table</div><br/>
+    	<div id="treeintable3" class="treeintable">Tree in Table 2 - tree only</div><br/>
     	
-    	<script type="text/javascript" src="js/jquery191.js"></script>
-        <script type="text/javascript" src="js/jquery.ui.widget.js"></script>
+    	<script src="jquery-ui-1.11.4/external/jquery/jquery.js"></script>
+		<script src="jquery-ui-1.11.4/jquery-ui.js"></script>
         <script type="text/javascript" src="js/jquery.ise.datastore.js"></script> 
         <script type="text/javascript" src="js/jquery.ise.treeintable.js"></script>
        
@@ -48,8 +48,8 @@
 						            		}
 		            	
 		            					});
-		            storeWidget= treeinTableNode.data("treeintable").store;  
-		            treeintableWidget=treeinTableNode.data("treeintable");
+		            storeWidget= treeinTableNode.data("iseTreeintable").store;  
+		            treeintableWidget=treeinTableNode.data("iseTreeintable");
 		            treeintableWidget.decorateTablerow=function(cpmTableRow){
 		            	//instance level override the class api
 		            	//console.log("instance override decorateTablerow()");
@@ -65,7 +65,7 @@
 						// storeWidget.getChildIndexOfParent(trNode.treetableArrayItem)
 						// storeWidget.getPreviousSiblingRowItem(trNode.treetableArrayItem);
 						// storeWidget.getNexeSiblingRowItem(trNode.treetableArrayItem);  
-						// storeWidget.getRootLevelRowItems()
+						// storeWidget.getRootLevelRowItems();
 						//*/
 					},
 		            treeintableWidget.buildTreeTable();
@@ -84,8 +84,8 @@
 		            console.log( "datastore build complete" );
 		            //instantiate "treeintable" object.
 		            var treeinTableNode =$("#treeintable2").treeintable({ store: store2});
-		            storeWidget2= treeinTableNode.data("treeintable").store;  
-		            treeintableWidget2=treeinTableNode.data("treeintable");
+		            storeWidget2= treeinTableNode.data("iseTreeintable").store;  
+		            treeintableWidget2=treeinTableNode.data("iseTreeintable");
 		            treeintableWidget2.decorateTablerow=function(cpmTableRow){
 		            	//instance level override the class api
 		            	//console.log("instance override decorateTablerow()");
@@ -106,7 +106,8 @@
 					treeintableWidget2.getHeaderDisplayNames=function(){
 					   return [ 'name', 'id', 'population','area'];
 					};
-		            treeintableWidget2.buildTreeTable();
+					treeintableWidget2.buildTreeTable(); 
+		            treeintableWidget2.setTreetableDragAndDrop(); //<------ enable Drag-and-Drop
 		        }
 		    });
             
@@ -122,8 +123,8 @@
 		            console.log( "datastore build complete" );
 		            //instantiate "treeintable" object.
 		            var treeinTableNode =$("#treeintable3").treeintable({ store: store3});
-		            storeWidget3= treeinTableNode.data("treeintable").store;  
-		            treeintableWidget3=treeinTableNode.data("treeintable");
+		            storeWidget3= treeinTableNode.data("iseTreeintable").store;  
+		            treeintableWidget3=treeinTableNode.data("iseTreeintable");
 		            treeintableWidget3.decorateTablerow=function(cpmTableRow){
 		            	//instance level override the class api
 		            	//console.log("instance override decorateTablerow()");

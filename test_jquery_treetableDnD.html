@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>jQuery UI TreeInTable</title>
+		
+        <link href="jquery-ui-1.11.4/jquery-ui.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
+        <link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
+	</head>
+	<body>
+	    <div id="datastore3" class="datastore"></div>
+    	<div id="treeintable3" class="treeintable">Tree in Table DnD </div>    	
+       
+         <!--  working 
+         <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		 -->
+		
+		<script src="jquery-ui-1.11.4/external/jquery/jquery.js"></script>
+		<script src="jquery-ui-1.11.4/jquery-ui.js"></script>
+ 
+        <!--  include widget js files  -->
+        <script type="text/javascript" src="js/jquery.ise.datastore.js"></script> 
+        <script type="text/javascript" src="js/jquery.ise.treeintable.js"></script>
+       
+       
+        <script type="text/javascript">
+             //debugger;
+            
+            //333--------------------
+            var treeintableWidget3= null;
+            var storeWidget3= null;
+            var store3 =$( "<div></div>" )
+		    .appendTo( "body" )
+		    .datastore({
+		    	url: "data/test2.json",
+		    	// once receives "complete" event from "datastore" object. carry on this function
+		        complete: function( event, data ) {
+		            console.log( "datastore build complete" );
+		            //instantiate "treeintable" object.
+		            var treeinTableNode =$("#treeintable3").treeintable({ store: store3});
+		            storeWidget3= treeinTableNode.data("iseTreeintable").store;  //"treeintable" old code
+		            treeintableWidget3=treeinTableNode.data("iseTreeintable");
+		            treeintableWidget3.decorateTablerow=function(cpmTableRow){
+		            	//instance level override the class api
+		            	//console.log("instance override decorateTablerow()");
+		            };
+		            
+		            treeintableWidget3.oncpmtableRowNodeDoubleClick=function(cpmtableRowNode) {		        		
+		        		console.log("double click on\n" +JSON.stringify(this.getTreeNodeJSON(this.selectedRow), null, 5));
+		        	};
+		            treeintableWidget3.onRowSelect=function(trNode){
+						console.log("TreeInColumnable-items onRowSelect()" + trNode.treetableArrayItem);
+						// for debugging. Test various api 
+						/*
+						 console.log("getChildItemIndex(): " );
+						 console.log(treeintableWidget3.getChildItemIndex(trNode));
+						 //*/
+						 
+						 /*
+						 console.log("getTreeNodeJSON(): " );
+						 console.log(JSON.stringify(treeintableWidget3.getTreeNodeJSON(trNode), null, 5));
+						 //*/
+						
+						 /*
+						 console.log("getParentRowItem(): " );
+						 console.log(treeintableWidget3.getParentRowItem(trNode));
+						 //*/
+						
+						 /*
+						 console.log("getSubTree(): " );
+						 console.log(treeintableWidget3.getSubTree(trNode));
+						 //*/
+						 
+						/*
+						 console.log("getDirectChildren(): " );
+						 console.log(treeintableWidget3.getDirectChildren(trNode));
+						 //*/
+						 
+						/*
+						console.log("getParentRowItemsList(): " );
+						console.log(treeintableWidget3.getParentRowItemsList(trNode));
+						//*/
+						 
+						/*
+						console.log("getChildIndexOfParent(): " );
+						console.log(treeintableWidget3.getChildIndexOfParent(trNode));
+						 //*/
+						 
+						/*
+						console.log("getPreviousSiblingRowItem(): " );
+						console.log(treeintableWidget3.getPreviousSiblingRowItem(trNode));
+						//*/
+						
+						/*
+						console.log("getNexeSiblingRowItem(): " );
+						console.log(treeintableWidget3.getNexeSiblingRowItem(trNode));  
+						//*/
+						
+						/*
+						console.log("getRootLevelRowItems() " );
+						console.log(  treeintableWidget3.getRootLevelRowItems());
+						//*/
+					};
+					treeintableWidget3.shouldThisAttributeHaveExpandie=function(attribute){
+			        // Overridable api which  determine this attribute need to present expandie icon
+						return (attribute=="name");  // this is the column showing tree
+					};
+
+					// table headers and display attribute should be matching.
+					treeintableWidget3.getProcessAttributes=function(storeAttributes){
+					   return ['name'];
+					   //return storeAttributes;
+					};
+					treeintableWidget3.getHeaderDisplayNames=function(){
+					   return [ 'name'];
+					};
+					//if (null == treeintableWidget3.store){
+					//	treeintableWidget3.store = treeintableWidget3.options.store.data("iseDatastore");
+					//}
+		            treeintableWidget3.buildTreeTable();  
+		            treeintableWidget3.setTreetableDragAndDrop(); ////<------ enable Drag-and-Drop
+		        }
+		    });
+        	
+		</script>
+	</body>
+</html>
