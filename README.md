@@ -21,5 +21,7 @@ jquery.ise.conditioneditor widget extends from jquery.ise.datastore.js.  It make
 
 All of these these widgets are based on jquery.ui.Factory.  It means they are 100% extendable. 
 
+http://upload.newmusicland.com/files/jquery-treeintable/index.html
+
   
 
