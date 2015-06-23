@@ -846,7 +846,7 @@
 	    },
 	    
 	    getDragContainment:function(){
-	    	return ".cpmTable";
+	    	return   this.element; //".cpmTable";
 	    }, 
 	    
 	    moveTreeNode:function(dragEl, dropToNode ){
