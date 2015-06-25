@@ -227,6 +227,13 @@
 		oncpmtableRowNodeDoubleClick: function(cpmtableRowNode) {
 		// summary:
 		// mouse double click handler
+			
+			//Experiment use third-party JS library esprima.js inside JQuery.UI widget.
+			/*if (esprima){
+				var mathJson = esprima.parse("a>b");
+				console.log("double click on\n" +JSON.stringify(mathJson, null, 5));
+			}*/
+			
 			console.log("double click on\n" +JSON.stringify(this.getTreeNodeJSON(this.selectedRow), null, 5));
 		},
 
@@ -869,9 +876,18 @@
 		     for( var i=0; i<subTree.length;i++){
 		    	 var currentRowItem = subTree[i];
 		    	 this.updateIndentLevel(currentRowItem, currentRowItem.treetableArrayItem.indentLevel + indentDiff);
-		    	currentRowItem.parentNode.removeChild(currentRowItem);
-			    dropToNode.parentNode.insertBefore( currentRowItem, dropToNode);
-			    this.moveTreeNodeAnimation(currentRowItem);
+		    	 currentRowItem.parentNode.removeChild(currentRowItem);
+			     dropToNode.parentNode.insertBefore( currentRowItem, dropToNode);
+			     //DONT'T DO animation here !!!! this.moveTreeNodeAnimation(currentRowItem);
+		     }
+		     if (subTree.length >0){
+		    	 // magic code to restore dragEl note pre-drag states.
+		    	 this.rowExpandieClickHandler(dragEl.expandieWidget);
+		    	 this.rowExpandieClickHandler(dragEl.expandieWidget);		
+		    	 for( var i=0; i<subTree.length;i++){
+			    	 var currentRowItem = subTree[i];
+			    	 this.moveTreeNodeAnimation(currentRowItem);
+			     }
 		     }
 	    },
 	    
