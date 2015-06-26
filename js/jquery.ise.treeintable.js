@@ -878,16 +878,7 @@
 		    	 this.updateIndentLevel(currentRowItem, currentRowItem.treetableArrayItem.indentLevel + indentDiff);
 		    	 currentRowItem.parentNode.removeChild(currentRowItem);
 			     dropToNode.parentNode.insertBefore( currentRowItem, dropToNode);
-			     //DONT'T DO animation here !!!! this.moveTreeNodeAnimation(currentRowItem);
-		     }
-		     if (subTree.length >0){
-		    	 // magic code to restore dragEl note pre-drag states.
-		    	 this.rowExpandieClickHandler(dragEl.expandieWidget);
-		    	 this.rowExpandieClickHandler(dragEl.expandieWidget);		
-		    	 for( var i=0; i<subTree.length;i++){
-			    	 var currentRowItem = subTree[i];
-			    	 this.moveTreeNodeAnimation(currentRowItem);
-			     }
+			     //DONT'T run animation here, it will mess UI!!!! this.moveTreeNodeAnimation(currentRowItem);
 		     }
 	    },
 	    
