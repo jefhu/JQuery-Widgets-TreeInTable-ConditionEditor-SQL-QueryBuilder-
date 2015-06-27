@@ -18,11 +18,18 @@ makes a user interface.  Sample test_jquery_treeintable.html shows how to put tw
 in widget instance.
 
 jquery.ise.conditioneditor widget extends from jquery.ise.datastore.js.  It makes manipulating boolean expression very easy.  Say, you have searching criteria looks like "(priority == "5")||((souceIp == "1.2.2.3")&&(device == "router"))".  ConditionEditor will organize it in a hierarchical tree like
+<br/>
 ▼||
-          priority == "5"
+<br/>
+&nbsp;&nbsp;          priority == "5"
+          <br/>
           ▼&&
-                    souceIp == "1.2.2.3"
-                    device == "router"
+&nbsp;&nbsp;          <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;                    souceIp == "1.2.2.3"
+                    <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;                  device == "router"
+                    <br/>
+<br/>
 Then, you can use drag-and-drop to re-arrange tree-nodes.  You got to check out this baby!
 
 All of these these widgets are based on jquery.ui.Factory.  It means they are 100% extendable. 
