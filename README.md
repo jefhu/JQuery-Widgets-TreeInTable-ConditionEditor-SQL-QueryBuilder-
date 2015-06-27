@@ -27,7 +27,21 @@ jquery.ise.conditioneditor widget extends from jquery.ise.datastore.js.  It make
                     <br/>
 &nbsp;&nbsp;&nbsp;&nbsp;device == "router"                  
 <br/>
-Then, you can use drag-and-drop to re-arrange tree-nodes.  <a href="http://upload.newmusicland.com/files/jquery-treeintable/test_jquery_conditioneditorDnD.html" target="_blank">See Condition Editor Semo here</a>
+Then, you can drag and drop to re-arrange tree-nodes to make the tree look like 
+
+<br/>
+▼||
+<br/>
+&nbsp;&nbsp;souceIp == "1.2.2.3"
+          <br/>
+&nbsp;&nbsp;▼&&
+          <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;device == "router"
+                    <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;priority == "5"                  
+<br/>
+<br/>
+<a href="http://upload.newmusicland.com/files/jquery-treeintable/test_jquery_conditioneditorDnD.html" target="_blank">See Condition Editor Semo here</a>
 
 All of these these widgets are based on jquery.ui.Factory.  It means they are 100% extendable. 
 
