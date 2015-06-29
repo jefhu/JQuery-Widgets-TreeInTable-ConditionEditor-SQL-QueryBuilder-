@@ -11,12 +11,12 @@
                     "operator": "==",
                     "left": {
                         "type": "Identifier",
-                        "name": "priority"
+                        "name": "sourceIp"
                     },
                     "right": {
                         "type": "Literal",
-                        "value": 5,
-                        "raw": "5"
+                        "value": "10.1.2.49",
+                        "raw": "\"10.1.2.49\""
                     }
                 },
                 "right": {
@@ -24,29 +24,34 @@
                     "operator": "&&",
                     "left": {
                         "type": "BinaryExpression",
-                        "operator": "==",
+                        "operator": ">=",
                         "left": {
                             "type": "Identifier",
-                            "name": "souceIp"
+                            "name": "priority"
                         },
                         "right": {
                             "type": "Literal",
-                            "value": "1.2.2.3",
-                            "raw": "\"1.2.2.3\""
+                            "value": 1,
+                            "raw": "1"
                         }
                     },
                     "right": {
-                        "type": "BinaryExpression",
-                        "operator": "==",
-                        "left": {
-                            "type": "Identifier",
-                            "name": "device"
+                        "type": "UnaryExpression",
+                        "operator": "!",
+                        "argument": {
+                            "type": "BinaryExpression",
+                            "operator": "!=",
+                            "left": {
+                                "type": "Identifier",
+                                "name": "device"
+                            },
+                            "right": {
+                                "type": "Literal",
+                                "value": "linksys",
+                                "raw": "\"linksys\""
+                            }
                         },
-                        "right": {
-                            "type": "Literal",
-                            "value": "router",
-                            "raw": "\"router\""
-                        }
+                        "prefix": true
                     }
                 }
             }

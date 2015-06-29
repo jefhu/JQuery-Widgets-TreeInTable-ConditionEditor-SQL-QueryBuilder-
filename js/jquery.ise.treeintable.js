@@ -2,7 +2,7 @@
  * @author : Jie Jeffery Hu (Jeff)
  * 
  *
- * Copyright 2013, Jie Jeffery Hu
+ * Copyright 2015, Jie Jeffery Hu
  * Dual licensed under the MIT 
  */
 (function($) {
@@ -89,10 +89,17 @@
 		// Application should consider override this API to build customized table-headers.
 			var headers =this.getHeaderDisplayNames();
 			for (var i=0;i<headers.length;i++){
-				var thNode = document.createElement("th");
-				thNode.innerHTML = headers[i];
+				var thNode = this.buildThNodeContent(headers, i);				
 				this.tableNode.append(thNode);
 			}
+		},
+		
+		buildThNodeContent:function(headers, i){
+		// summary:
+		// build a <th> node as a table header
+			var thNode = document.createElement("th"); 
+			thNode.innerHTML = headers[i];
+			return thNode;
 		},
 
 		getHeaderDisplayNames:function(){
@@ -878,13 +885,13 @@
 		    	 this.updateIndentLevel(currentRowItem, currentRowItem.treetableArrayItem.indentLevel + indentDiff);
 		    	 currentRowItem.parentNode.removeChild(currentRowItem);
 			     dropToNode.parentNode.insertBefore( currentRowItem, dropToNode);
-			     //DONT'T run animation here, it will mess UI!!!! this.moveTreeNodeAnimation(currentRowItem);
+			     //DONT'T run animation here, it will mess UI!!!! this.moveTreeNodeAnimation(currentRowItem);			     
 		     }
 	    },
 	    
 	    moveTreeNodeAnimation:function(currentRowItem){
-	    	$(currentRowItem).fadeOut();
-		    $(currentRowItem).fadeIn();
+	    	$(currentRowItem).fadeOut().fadeIn();
+		    //$(currentRowItem).fadeIn();
 	    },
 	    
 	    

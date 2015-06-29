@@ -2,7 +2,7 @@
  * @author : Jie Jeffery Hu (Jeff)
  * 
  *
- * Copyright 2013, Jie Jeffery Hu
+ * Copyright 2015, Jie Jeffery Hu
  * Dual licensed under the MIT 
  */
 (function($) {
@@ -206,8 +206,170 @@
 	    	}
 	    	return mathExpression;
 	    },
+	    
+	    buildThNodeContent:function(headers, i){
+    	// summary:
+	    // override super's api
+				var thNode = document.createElement("th"); 
+				$(thNode).addClass("cceTH");
+				
+				//logical operators
+				this.buildOperatorButtons(headers, i, thNode)
+				
+				//condition buttons
+				var separator1 = this.buildToolbarSeparator();
+				thNode.appendChild(separator1[0]);				
+				this.buildConditionButtons(headers, i, thNode);
+				
+				//action buttons
+				var separator1 = this.buildToolbarSeparator();
+				thNode.appendChild(separator1[0]);				
+				this.buildActionButtons(headers, i, thNode);
+				
+				return thNode;
+	    },
+	    
+	    buildOperatorButtons:function(headers, i, thNode){
+	    	var opAndWidget = this.buildThNodeContentOperatorNode(headers, i, "AND");
+			var opOrWidget  = this.buildThNodeContentOperatorNode(headers, i, "OR");
+			var opNotWidget = this.buildThNodeContentOperatorNode(headers, i, "NOT");
+			
+			thNode.appendChild(opAndWidget);
+			thNode.appendChild(opOrWidget);
+			thNode.appendChild(opNotWidget);
+	    }, 
+	    
+	    buildToolbarSeparator:function(){
+	    	 return $('<span class="toolbarSeparator"></span>').text('|');
+	    },
+	    
+	    buildThNodeContentOperatorNode:function(headers, i, symbol){
+	    	var operatorWidget = document.createElement("button");
+	    	$( operatorWidget).button({
+	    	      icons: {
+	    	        primary: "cce" + symbol
+	    	      },
+	    	      text: false
+	    	    });
+	    	operatorWidget.symbol=symbol;
+	    	operatorWidget.treeintable=this;	
+	    	operatorWidget.onclick =function(e){
+								var table = this.treeintable;
+								table.operatorClickHandler(operatorWidget);								
+							};			
+			return operatorWidget;
+	    },	    
+	    
+	    buildConditionButtons:function(headers, i, thNode){
+			// summary:
+			// build "condition" buttons
+				
+				var conditionWidget = this.buildThNodeContentActionNode(headers, i, "Condition");	
+				thNode.appendChild(conditionWidget);
+			},
+	  
 		
+		buildActionButtons:function(headers, i, thNode){
+		// summary:
+		// build EDIT/REMOVE buttons
+			
+			var opEditWidget = this.buildThNodeContentActionNode(headers, i, "EDIT");
+			var opRemoveWidget  = this.buildThNodeContentActionNode(headers, i, "DEL");
+			
+			thNode.appendChild(opEditWidget);
+			thNode.appendChild(opRemoveWidget);
+		},
+		
+		
+		 buildThNodeContentActionNode:function(headers, i, symbol){
+		// summary:
+	    // helper function to build action node
+			/*var actionWidget = document.createElement("a");		
+			actionWidget.innerHTML="[" + symbol + "]";*/
+			 var actionWidget = document.createElement("button");
+		    	$( actionWidget).button({
+		    		label: symbol		    	      
+		    	    });
+			actionWidget.symbol=symbol;
+			actionWidget.treeintable=this;		
+			actionWidget.onclick =function(e){
+										var table = this.treeintable;
+										table.actionClickHandler(actionWidget);
+										return false;};			
+			return actionWidget;
+				
+				
+		},
+		
+		operatorClickHandler:function(opWidget){
+			if (opWidget.symbol=="AND"){
+				if(this.debug) console.log("operator.AND onclick");
+				this.invokeLogicalOperator(opWidget);
+			}else if (opWidget.symbol=="OR"){
+				if(this.debug) console.log("operator.OR onclick");
+				this.invokeLogicalOperator(opWidget);
+			}else if (opWidget.symbol=="NOT"){
+				if(this.debug) console.log("operator.NOT onclick");
+				this.invokeLogicalOperator(opWidget);
+			}else{
+				if(this.debug) console.log("NOT SUPPORT OPERATOR onclick");
+			}
+		},
+		
+		invokeLogicalOperator:function(opWidget){
+			if (!this.selectedRow) return;	
+			var selectedNode = this.selectedRow;
+			window.alert(opWidget.symbol + " click is being implemented");
+		},
+		
+		actionClickHandler:function(opWidget){
+			if (opWidget.symbol=="EDIT"){
+				if(this.debug) console.log("operator.EDIT onclick");
+				this.invokeActionEdit(opWidget);
+			}else if (opWidget.symbol=="DEL"){
+				if(this.debug) console.log("operator.DEL onclick");
+				this.invokeActionDelete(opWidget);
+			}else if (opWidget.symbol=="Condition"){
+				if(this.debug)console.log("operator.Condition onclick");
+				this.invokeActionCondtion(opWidget);
+			}else{
+				this.actionClickHandlerExtra(opWidget);
+			}
+		},
+		
+		actionClickHandlerExtra:function(opWidget){
+			if(this.debug) console.log("NOT SUPPORT ACTION onclick");
+		},
+		
+		invokeActionEdit:function(opWidget){
+			window.alert("[Edit] click is being implemented");
+		},
+		
+		invokeActionCondtion:function(opWidget){
+			window.alert("[Condition] click is being implemented");			
+		},
+		
+		invokeActionDelete:function(opWidget){
+		// summary:
+		// remove selectedRow and selectedRow.subTree nodes
+			
+			if (!this.selectedRow) return;			
+			var r = confirm("Are you sure to delete?");
+			if (r == true) {
+				var selectedNode = this.selectedRow;
+				var subTree = this.getSubTree(selectedNode);
+				var len = subTree.length;
+				for (i=len-1;i>=0; i--){
+					var currentRow = subTree[i];
+					currentRow.parentNode.removeChild(currentRow);
+				}
+				selectedNode.parentNode.removeChild(selectedNode);
+			} else {
+			   return;
+			}
+			
+		}, 
     
-    	dummy:null
+    	debug:true
     });  // end widget
 })(jQuery);

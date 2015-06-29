@@ -69,3 +69,45 @@
 .cpmTable  .cpmtableItemDown{
 	background-color: #c2cbd1;/*selected cpmtable item */
 }
+
+/* Common Condition Editor */
+
+.cpmTable button.ui-button-icon-only{
+	width:30px;
+	/* left:20%; */
+}
+
+.cpmTable .cceTH  {
+   text-align:left;
+   cursor: default;
+}
+
+.cpmTable .cceOperator{
+	/* background-color: #cccccc; */
+    /*min-width:16px;  */
+}
+
+.cpmTable .cceAND {
+    background-image: url("../img/and.gif");
+   
+}
+
+.cpmTable .cceOR {   
+	 background-image: url("../img/or.gif");	
+}
+
+.cpmTable .cceNOT {
+    background-image: url("../img/not.gif");     
+}
+
+.cpmTable .toolbarSeparator {  
+    height: 100%;
+    padding-left: 4px;
+    line-height: 2em;
+    margin-right:5px;
+}
+
+.cpmTable .cceTH .ui-button-text-only .ui-button-text {
+  padding: 0 5px;
+  font-size: 12px;
+}

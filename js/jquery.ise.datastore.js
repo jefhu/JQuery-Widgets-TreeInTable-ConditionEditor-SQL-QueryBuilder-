@@ -2,7 +2,7 @@
  * @author : Jie Jeffery Hu (Jeff)
  * 
  *
- * Copyright 2013, Jie Jeffery Hu
+ * Copyright 2015, Jie Jeffery Hu
  * Dual licensed under the MIT 
  */
 (function($) {
