@@ -74,7 +74,7 @@
 
 .cpmTable button.ui-button-icon-only{
 	width:30px;
-	/* left:20%; */
+	min-height: 20px;
 }
 
 .cpmTable .cceTH  {
@@ -89,15 +89,18 @@
 
 .cpmTable .cceAND {
     background-image: url("../img/and.gif");
+    
    
 }
 
 .cpmTable .cceOR {   
 	 background-image: url("../img/or.gif");	
+	
 }
 
 .cpmTable .cceNOT {
     background-image: url("../img/not.gif");     
+    min-height: 20px;
 }
 
 .cpmTable .toolbarSeparator {  
@@ -110,4 +113,13 @@
 .cpmTable .cceTH .ui-button-text-only .ui-button-text {
   padding: 0 5px;
   font-size: 12px;
+   min-height: 16px;
+   margin-top:5px;
+}
+
+.cpmTable .cceRowImage{
+	margin: 2px 3px 0px 3px;
+}
+.cpmTable .cceRowText{
+	
 }

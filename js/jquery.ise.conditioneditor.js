@@ -222,8 +222,8 @@
 				this.buildConditionButtons(headers, i, thNode);
 				
 				//action buttons
-				var separator1 = this.buildToolbarSeparator();
-				thNode.appendChild(separator1[0]);				
+				var separator2 = this.buildToolbarSeparator();
+				thNode.appendChild(separator2[0]);				
 				this.buildActionButtons(headers, i, thNode);
 				
 				return thNode;
@@ -253,10 +253,11 @@
 	    	    });
 	    	operatorWidget.symbol=symbol;
 	    	operatorWidget.treeintable=this;	
-	    	operatorWidget.onclick =function(e){
-								var table = this.treeintable;
-								table.operatorClickHandler(operatorWidget);								
-							};			
+	    	
+	    	$(operatorWidget ).bind( "click", function() {
+	    		var table = this.treeintable;
+				table.operatorClickHandler(operatorWidget);	
+			});	
 			return operatorWidget;
 	    },	    
 	    
@@ -284,18 +285,22 @@
 		 buildThNodeContentActionNode:function(headers, i, symbol){
 		// summary:
 	    // helper function to build action node
-			/*var actionWidget = document.createElement("a");		
-			actionWidget.innerHTML="[" + symbol + "]";*/
+			
 			 var actionWidget = document.createElement("button");
 		    	$( actionWidget).button({
 		    		label: symbol		    	      
 		    	    });
 			actionWidget.symbol=symbol;
 			actionWidget.treeintable=this;		
-			actionWidget.onclick =function(e){
+			/*actionWidget.onclick =function(e){
 										var table = this.treeintable;
 										table.actionClickHandler(actionWidget);
-										return false;};			
+										return false;};			*/
+			$(actionWidget ).bind( "click", function() {
+				var table = this.treeintable;
+				table.actionClickHandler(actionWidget);
+				return false;
+			});
 			return actionWidget;
 				
 				
@@ -319,8 +324,58 @@
 		invokeLogicalOperator:function(opWidget){
 			if (!this.selectedRow) return;	
 			var selectedNode = this.selectedRow;
-			window.alert(opWidget.symbol + " click is being implemented");
+			//window.alert(opWidget.symbol + " click is being implemented");
+			this.buildNewLogicalOperatorTrRow(opWidget, selectedNode);
 		},
+		
+		buildNewLogicalOperatorTrRow:function(opWidget, selectedNode){
+			var dataObj={};
+	    	var obj = {};
+	    	
+	    	obj.isLeafNode=false;
+	    	obj.expanded=true;
+	    	obj.dataItem= dataObj;
+            obj.indentLevel = selectedNode.treetableArrayItem.indentLevel;
+                       
+            var operator ="ERROR";
+            if (opWidget.symbol=="AND"){
+				operator="&&";
+				obj.type="LogicalExpression";
+			}else if (opWidget.symbol=="OR"){
+				operator="||";
+				dataObj.type="LogicalExpression";
+			}else if (opWidget.symbol=="NOT"){
+				operator="!";
+				dataObj.type="UnaryExpression";
+			}
+			dataObj["operator"]=operator;
+            dataObj["expression"]=operator
+            
+           
+            var i = this.getAllRowNodes().length;
+            var trNode = this.buildTableRow(this.store, obj, i, this.tableNode);
+            this.moveTreeNode(trNode, selectedNode );
+		}, 
+		
+		buildNewConditionTrRow:function(opWidget, selectedNode){
+			var dataObj={};
+	    	var obj = {};
+	    	
+	    	obj.isLeafNode=true;
+	    	obj.expanded=false;
+	    	obj.dataItem= dataObj;
+            obj.indentLevel = selectedNode.treetableArrayItem.indentLevel;
+              
+            obj.type="BinaryExpression";
+            
+			
+            dataObj["expression"]="[field]==[value]";
+            
+           
+            var i = this.getAllRowNodes().length;
+            var trNode = this.buildTableRow(this.store, obj, i, this.tableNode);
+            this.moveTreeNode(trNode, selectedNode );
+		}, 
 		
 		actionClickHandler:function(opWidget){
 			if (opWidget.symbol=="EDIT"){
@@ -346,7 +401,11 @@
 		},
 		
 		invokeActionCondtion:function(opWidget){
-			window.alert("[Condition] click is being implemented");			
+			//window.alert("[Condition] click is being implemented");		
+			
+			if (!this.selectedRow) return;	
+			var selectedNode = this.selectedRow;			
+			this.buildNewConditionTrRow(opWidget, selectedNode);
 		},
 		
 		invokeActionDelete:function(opWidget){
@@ -369,7 +428,36 @@
 			}
 			
 		}, 
-    
+		
+		fillColumnNode:function(columnNode, values,trNode, treetableArrayItem, treetableArray,store,repeaterItem, attributes, attributeIndex){
+			// summary:
+			// override super api
+			
+			var textValue = values;
+			var imageNode = document.createElement("img"); 
+			var imagePath ="img/condition.gif";
+			//var bool =(dataItem.type == "LogicalExpression" || dataItem.type == "UnaryExpression")
+			if (values == "!"){
+				imagePath= "img/not.gif";
+				textValue="NOT";
+			}else if (values == "&&"){
+				imagePath= "img/and.gif";
+				textValue="AND";
+			}else if (values == "||"){
+				imagePath= "img/or.gif";
+				textValue="OR";
+			}
+			imageNode.setAttribute("src", imagePath );
+			var newText = document.createTextNode(textValue);
+			$(imageNode).addClass("cceRowImage");
+			$(newText).addClass("cceRowText");		
+			$(columnNode).append(imageNode);
+			$(columnNode).append(newText);
+			return columnNode;
+			//*/
+			//this._super(columnNode, values,trNode, treetableArrayItem, treetableArray,store,repeaterItem, attributes, attributeIndex);
+		},
+
     	debug:true
     });  // end widget
 })(jQuery);

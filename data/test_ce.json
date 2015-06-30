@@ -11,7 +11,7 @@
                     "operator": "==",
                     "left": {
                         "type": "Identifier",
-                        "name": "sourceIp"
+                        "name": "SourceIp"
                     },
                     "right": {
                         "type": "Literal",
@@ -27,7 +27,7 @@
                         "operator": ">=",
                         "left": {
                             "type": "Identifier",
-                            "name": "priority"
+                            "name": "Priority"
                         },
                         "right": {
                             "type": "Literal",
@@ -43,7 +43,7 @@
                             "operator": "!=",
                             "left": {
                                 "type": "Identifier",
-                                "name": "device"
+                                "name": "Device"
                             },
                             "right": {
                                 "type": "Literal",

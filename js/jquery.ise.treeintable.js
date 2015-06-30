@@ -149,9 +149,11 @@
 		buildTableRow : function(store, treetableItem,i, tableNode){
 		// summary:
 		// build a table row  for a given treetableItem item
+			
+			    var cpmTableRow = null;
 				try{
 					var cpmTable=this;
-					var cpmTableRow = document.createElement("tr");
+					cpmTableRow = document.createElement("tr");
 					cpmTableRow.id= this.id + "_row_" + i.toString();
 					cpmTableRow.table = this;
 
@@ -193,6 +195,7 @@
 					throw e;
 					
 				}
+				return cpmTableRow;
 		},//end function
 		
 		setCpmtableRowNodeMouseEventHandler:function(cpmtableRowNode){
@@ -408,12 +411,21 @@
 		                    this.buildDataRowExpandie(columnNode, treetableArrayItem, treetableArray,store,repeaterItem);
 		                    trNode.expandieTdNode = columnNode;
 						}
-						$(columnNode).append(newText);
+						//$(columnNode).append(newText);
+						this.fillColumnNode(columnNode, values,trNode, treetableArrayItem, treetableArray,store,repeaterItem, attributes, attributeIndex);
 						$(trNode).append(columnNode);
 					}
 					
 				}	
 		},//end function
+		
+		fillColumnNode:function(columnNode, values,trNode, treetableArrayItem, treetableArray,store,repeaterItem, attributes, attributeIndex){
+		// summary:
+		// fill in content to the column cell. (after adding expandie and indent-spaces)
+			var newText = document.createTextNode(values);
+			$(columnNode).append(newText);
+			return columnNode;
+		},
 		
 		isToBuildExpandieBasedOnRank:function(){
 		// summary:
@@ -560,11 +572,17 @@
 				
 				this.setExpandieUI(expandieWidget);
 				tdNode.appendChild(expandieWidget);
-				expandieWidget.onclick =function(e){
+				/*expandieWidget.onclick =function(e){
 											console.log("expandieWidget.onclick");
 											var table = this.treeintable;
 											table.rowExpandieClickHandler(expandieWidget);
-											return false;};
+											return false;};*/
+				$(expandieWidget ).bind( "click", function() {
+					console.log("expandieWidget.onclick");
+					var table = this.treeintable;
+					table.rowExpandieClickHandler(expandieWidget);
+					return false;
+					});
 			}
 			
 		},
@@ -698,26 +716,22 @@
 			}
 		},
 		
-		_isAnyParentItemInCollapseState:function(repeaterItem){
+		_isAnyParentItemInCollapseState:function(trNode){
 			// summary:
 			// Traverse the parent data-item path to see if any parentDateItemRepeaterItem is in collapse state.
 			// return true/false
-
-			/*var boolParentCollapse = false;
-			var idx = this.getChildItemIndex(repeaterItem);
-			var currentRepeaterItem = repeaterItem;
-			var parentDateItemRepeaterItem = this._getParentDataItemRepeaterItem(currentRepeaterItem);
-			while(parentDateItemRepeaterItem && !boolParentCollapse){
-				if ( parentDateItemRepeaterItem.treetableArrayItem.statusObject && 
-						!parentDateItemRepeaterItem.treetableArrayItem.statusObject.isExpanded){
-					return true;
-				}else{
-					currentRepeaterItem = parentDateItemRepeaterItem;
-					var parentDateItemRepeaterItem = this._getParentDataItemRepeaterItem(currentRepeaterItem);
+			
+			var parentTrNodes = this.getParentRowItemsList(trNode);
+			var boolParentCollapse = false;
+			if (parentTrNodes && parentTrNodes.length>0){
+				var len = parentTrNodes.length;
+				for (var i=len-1; i>-1 ;i--){
+					var currentParentTrNode = parentTrNodes[i];
+					if (!currentParentTrNode.treetableArrayItem.expanded){
+						return true;
+					}
 				}
 			}
-
-			return boolParentCollapse;*/
 			return false;
 		},
 		
@@ -741,13 +755,15 @@
 				expandieWidget.innerHTML= this.getExpandieWidgetInnerHTMLText(expandieWidget);
 				
 				if (expandieWidget.treetableArrayItem.expanded){
-					$(expandieWidget).removeClass("cmpTableExpendieCollapse");
-					$(expandieWidget).removeClass("cmpTableExpendieCollapse");
+					$(expandieWidget).removeClass("cpmTableExpendieCollapse");
+					$(expandieWidget).addClass("cpmTableExpendieExpand");
+					                            
 				}
 				else{
-					$(expandieWidget).addClass("cmpTableExpendieCollapse");
-					$(expandieWidget).removeClass("cmpTableExpendieCollapse");
+					$(expandieWidget).addClass("cpmTableExpendieCollapse");
+					$(expandieWidget).removeClass("cpmTableExpendieCollapse");
 				}
+				//cpmTableExpendieExpand                                cpmTableExpendieCollapse
 				
 		},
 		
