@@ -46,8 +46,9 @@
 		    	 if (mathString.trim().length==0) return;
 		    	 try{
 		    		 var mathJson =esprima.parse(mathString);		    		 
-		    		 //alert("Value: " + JSON.stringify(mathJson, null, 5));
-		    		 treeintableWidget3.element.children()[0].remove();
+		    		 
+		    		 //treeintableWidget3.element.children()[0].remove();
+		    		$(treeintableWidget3.element).empty();
 		    		
 		    		 var store3 =$( "<div></div>" )
 		 		    .appendTo( "body" )
