@@ -17,7 +17,7 @@
 
 .cpmTable th {
     background: #f6f6f6; /* #F7F3F7; */
-    border:1px solid #000000; 
+    border:1px solid #ccc; /* #000000;  */
     font-weight: bold;
 }
 

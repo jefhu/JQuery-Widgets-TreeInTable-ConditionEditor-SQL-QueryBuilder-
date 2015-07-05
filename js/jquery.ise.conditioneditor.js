@@ -5,6 +5,35 @@
  * Copyright 2015, Jie Jeffery Hu
  * Dual licensed under the MIT 
  */
+
+/**
+ jquery.ise.conditioneditor widget extends from jquery.ise.datastore.js.  It makes manipulating a boolean expression very simple and easy. 
+ Say, you have searching criteria looks like "(priority == "5")||((souceIp == "1.2.2.3")&&(device == "router"))". 
+ ConditionEditor will organize it in a hierarchical tree like 
+		▼|| 
+		  priority == "5" 
+		  ▼&& 
+		    souceIp == "1.2.2.3" 
+		    device == "router"
+		
+		Then, you can drag and drop to re-arrange tree-nodes to make the tree look like
+	
+		
+		▼|| 
+		  souceIp == "1.2.2.3" 
+		  ▼&& 
+		    device == "router" 
+		    priority == "5"
+    
+ "invokeConditionEditor()" is the key api that let use edit condition-editor tree node. Application should override this API to customize condition editing.
+ 	
+ 	this.instantiateDialog();	//ConditionEditor invokes a dialog to present UI for editing condition.
+	this.setDialogContent();    //Load Editor UI to the dialog.
+	this.updateCondition();     //Retrieve value from Editor UI and update the ConditionEditor Tree.  
+ 
+  buildThNodeContent(..) builds &&/OR/NOT and other buttons for manipulating the ConditionEditor Tree.
+ */
+
 (function($) {
 
     $.widget("ise.conditioneditor", $.ise.treeintable, {
@@ -687,10 +716,11 @@
 	 		    		//retrieve the conditionEditor and call its updateConditon() api
 	 		    		$(this).data("uiDialog").conditionEditor.updateCondition();
 	 		    		$(this).data("uiDialog").close();
-		 		     },
+		 		     }
+	 		      /* ,
 	 		        Cancel: function() {
 	 		        	$(this).data("uiDialog").close();
-	 		        }
+	 		        }*/
 	 		      },
 	 		      close: function() {
 	 		        /*form[ 0 ].reset();

@@ -5,6 +5,67 @@
  * Copyright 2015, Jie Jeffery Hu
  * Dual licensed under the MIT 
  */
+
+/**
+ TreeInTable widget is a JQuery UI widget.  It internally relies on DataStore widget to provide data-model.
+ It presents hierarchical data as a table in which one of the column is a tree.
+ The API call sequence is as following.  
+ 
+ buildTreeTable() -> 
+	buildTableColumnHeaders() ->
+					buildThNodeContent()
+	buildTableRow() ->
+					buildRowContent() ->
+							buildCellContent() ->
+									buildIndentSpaceForDataRow (..) 
+									buildDataRowExpandie(..) ->
+											rowExpandieClickHandler(..)  //manage expandie click.
+									fillColumnNode(..)
+
+ To enable drag-and-drop, call, invoke  setTreetableDragAndDrop() api.  
+ 	treeintableWidget3.buildTreeTable();  
+ 	treeintableWidget3.setTreetableDragAndDrop(); ////<------ enable Drag-and-Drop
+ 	
+ 	// follow this function code to figure out how to customzie Drag-and-Drop for your application.
+ 	 setTreetableDragAndDrop:function(){
+	    	this.setTreetableDrag();  
+	    	this.setTreetableDrop();
+	  },
+
+ THe followings are commonly used APIs (treeintableWidget3 is the "treeintable" widget). See test_jquery_treetableDnD.html 
+ 
+ console.log("getChildItemIndex(): " );
+ console.log(treeintableWidget3.getChildItemIndex(trNode)); 
+ 
+ console.log("getTreeNodeJSON(): " );
+ console.log(JSON.stringify(treeintableWidget3.getTreeNodeJSON(trNode), null, 5));
+
+ 
+ console.log("getParentRowItem(): " );
+ console.log(treeintableWidget3.getParentRowItem(trNode));
+ 
+ console.log("getSubTree(): " );
+ console.log(treeintableWidget3.getSubTree(trNode)); 
+
+ console.log("getDirectChildren(): " );
+ console.log(treeintableWidget3.getDirectChildren(trNode)); 
+
+console.log("getParentRowItemsList(): " );
+console.log(treeintableWidget3.getParentRowItemsList(trNode));
+
+console.log("getChildIndexOfParent(): " );
+console.log(treeintableWidget3.getChildIndexOfParent(trNode));
+
+console.log("getPreviousSiblingRowItem(): " );
+console.log(treeintableWidget3.getPreviousSiblingRowItem(trNode));
+
+console.log("getNexeSiblingRowItem(): " );
+console.log(treeintableWidget3.getNexeSiblingRowItem(trNode));  
+
+console.log("getRootLevelRowItems() " );
+console.log(  treeintableWidget3.getRootLevelRowItems());
+
+ */
 (function($) {
 
     $.widget("ise.treeintable", {
@@ -31,10 +92,7 @@
 		}, // _create
 		
 		_init: function(){
-            var self = this;
-            //var datastorePlugin = $("#datastore1").data("datastore");
-            //console.log("datastorePlugin", datastorePlugin);
-            //datastorePlugin.getItems();
+            var self = this; 
 		},
 		
 		processStoreItemsBeforeBuildTable:function(storeItems){
@@ -85,7 +143,7 @@
 		
 		decorateTableNode:function(tableNode){
 		//summary:
-		// this is an overrable api for application to do something about the tableNode.  The input tablen node is a $
+		// this is an over-able api for application to do something about the tableNode.  The input tablen node is a $
 			//doing nothing;
 		},
 		

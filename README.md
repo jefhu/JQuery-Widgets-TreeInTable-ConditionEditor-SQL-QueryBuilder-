@@ -15,7 +15,7 @@ jquery.ise.treeintable.js widget uses datastore as data-model.  "treeintable" wi
 makes a user interface.  Sample <a href="http://upload.newmusicland.com/files/jquery-treeintable/test_jquery_treeintable.html" target="_blank">test_jquery_treeintable.html</a> shows how to put two widgets together and techniques of overriding function
 in widget instance.
 
-jquery.ise.conditioneditor widget extends from jquery.ise.datastore.js.  It makes manipulating a boolean expression very simple and easy.  Say, you have searching criteria looks like "(priority == "5")||((souceIp == "1.2.2.3")&&(device == "router"))".  ConditionEditor will organize it in a hierarchical tree like
+jquery.ise.conditioneditor widget extends from jquery.ise.treeintable.js.  It makes manipulating a boolean expression very simple and easy.  Say, you have searching criteria looks like "(priority == "5")||((souceIp == "1.2.2.3")&&(device == "router"))".  ConditionEditor will organize it in a hierarchical tree like
 <br/>
 ▼||
 <br/>
