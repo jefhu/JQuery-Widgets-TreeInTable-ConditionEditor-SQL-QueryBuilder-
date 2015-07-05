@@ -53,6 +53,7 @@
 			var self = this;
 			
 			var tableNode = this.buildTableDomNode();//$("<table class='cpmTable' id=" + self.id + "></table>");
+			this.decorateTableNode(tableNode);
 			this.tableNode = tableNode;
 			self.tableNode=tableNode;
 			self.element.append(tableNode);
@@ -80,6 +81,12 @@
 		// </div>
 		// make sure this api return the "table" element.  Assign this.myDiv to  "top" div. 
 			return $("<table class='cpmTable' id=" + this.id + "></table>");
+		},
+		
+		decorateTableNode:function(tableNode){
+		//summary:
+		// this is an overrable api for application to do something about the tableNode.  The input tablen node is a $
+			//doing nothing;
 		},
 		
 		buildTableColumnHeaders:function(){
@@ -761,7 +768,7 @@
 				}
 				else{
 					$(expandieWidget).addClass("cpmTableExpendieCollapse");
-					$(expandieWidget).removeClass("cpmTableExpendieCollapse");
+					$(expandieWidget).removeClass("cpmTableExpendieExpand");
 				}
 				//cpmTableExpendieExpand                                cpmTableExpendieCollapse
 				

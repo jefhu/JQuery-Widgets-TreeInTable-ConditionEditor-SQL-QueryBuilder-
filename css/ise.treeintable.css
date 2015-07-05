@@ -1,6 +1,7 @@
 
 .cpmTable{
-	border:1px solid #000000;
+	border:1px solid #e4e5e6;
+	border-spacing: 0;
 }
 .cpmTable table {
     font-size:12px;
@@ -10,12 +11,12 @@
 }
 .cpmTable td {
     vertical-align:middle; text-align:left;
-    border:1px solid #000000; 
+    border:1px solid #e4e5e6; 
 
 }
 
 .cpmTable th {
-    background: #F7F3F7;
+    background: #f6f6f6; /* #F7F3F7; */
     border:1px solid #000000; 
     font-weight: bold;
 }
@@ -44,7 +45,7 @@
 
           
 .cpmTable .cpmtableItemNormal{
-	background-color: #FAF9F9;
+	background-color: #FAF9F9; 
 }
 
 /*
@@ -75,6 +76,18 @@
 .cpmTable button.ui-button-icon-only{
 	width:30px;
 	min-height: 20px;
+}
+
+.cpmTable.conditioneditor .cpmtableItemNormal {
+  background-color: #fff;
+}
+
+.cpmTable.conditioneditor  .cpmtableItemHover{
+	background-color: #e4e5e6; /*hover cpmtable item */
+}
+
+.cpmTable.conditioneditor  .cpmtableItemDown{
+	background-color: #c2cbd1;/*selected cpmtable item */
 }
 
 .cpmTable .cceTH  {
@@ -122,4 +135,14 @@
 }
 .cpmTable .cceRowText{
 	
+}
+
+.cpmTable .cpmTableCCEExpendieExpand{
+	 background-image: url("../img/plus.gif");
+	 background-size: 18px 18px;
+}
+
+.cpmTable .cpmTableCCEExpendieCollapse{
+	 background-image: url("../img/minus.gif");
+	 background-size: 18px 18px;
 }

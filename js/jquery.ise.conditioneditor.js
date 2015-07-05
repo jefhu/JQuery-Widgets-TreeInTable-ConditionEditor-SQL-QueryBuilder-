@@ -8,10 +8,8 @@
 (function($) {
 
     $.widget("ise.conditioneditor", $.ise.treeintable, {
-    	getExpandieWidgetInnerHTMLText :function(expandieWidget){
-			//return (expandieWidget.treetableArrayItem.expanded)? " + " : " - ";
-    		return this._super(expandieWidget);
-		},
+    	
+    	
 		
 		
 		processStoreItemsBeforeBuildTable:function(storeItems){
@@ -53,6 +51,38 @@
 			return treepathArray; //storeItems;
 			
 			
+		},
+		
+		decorateTableNode:function(tableNode){
+		//summary:
+		//Oerride super's api
+			tableNode.addClass("conditioneditor");
+		},
+
+		getExpandieWidgetInnerHTMLText :function(expandieWidget){
+			/*var imageNode = document.createElement("img"); 
+			var imagePath = (expandieWidget.treetableArrayItem.expanded)? "img/plus.gif": "img/minus.gif"			
+			imageNode.setAttribute("src", imagePath );
+			expandieWidget.appendChild(imageNode);
+			//innerHTML=imageNode.outerHTML;
+			 */    		
+			return this._super(expandieWidget);  // how to call super .
+		},
+		
+		setExpandieUI:function(expandieWidget){
+			// summary:
+			// API that style the expandie
+
+			expandieWidget.innerHTML= "&nbsp;&nbsp;&nbsp;&nbsp;"
+			if (expandieWidget.treetableArrayItem.expanded){
+				$(expandieWidget).removeClass("cpmTableCCEExpendieCollapse");
+				$(expandieWidget).addClass("cpmTableCCEExpendieExpand");
+
+			}
+			else{
+				$(expandieWidget).addClass("cpmTableCCEExpendieCollapse");
+				$(expandieWidget).removeClass("cpmTableCCEExpendieExpand");
+			}
 		},
 		
 	
@@ -306,6 +336,8 @@
 				
 		},
 		
+		
+		
 		operatorClickHandler:function(opWidget){
 			if (opWidget.symbol=="AND"){
 				if(this.debug) console.log("operator.AND onclick");
@@ -397,7 +429,8 @@
 		},
 		
 		invokeActionEdit:function(opWidget){
-			window.alert("[Edit] click is being implemented");
+			//window.alert("[Edit] click is being implemented");
+			this.invokeConditionEditor();
 		},
 		
 		invokeActionCondtion:function(opWidget){
@@ -457,6 +490,74 @@
 			//*/
 			//this._super(columnNode, values,trNode, treetableArrayItem, treetableArray,store,repeaterItem, attributes, attributeIndex);
 		},
+		
+		oncpmtableRowNodeDoubleClick: function(cpmtableRowNode) {
+		// summary:
+		// invoke condition editor
+				
+				//console.log("double click on\n" +JSON.stringify(this.getTreeNodeJSON(this.selectedRow), null, 5));
+			    this.invokeConditionEditor();
+		},
+		
+		setDialogContent:function(){
+		// summary:
+		// This is an overridable api to set a editor in the dialog.
+			
+			 var contentNode = $(this.dialog);
+		    	 $(contentNode).button({
+		    		//label: "symbol"		
+		    		 label: this.selectedRow.treetableArrayItem.dataItem.expression  
+	    	    });
+		},
+		
+		updateCondition:function(){
+			if (this.debug) console.log( "ConditionEditor.updateCondition() called" );
+		}, 
+		
+		invokeConditionEditor:function(){
+		// summary:
+		// This api invoke a dialog to let user change selected-row.
+			
+			if (!this.selectedRow) return;
+			if (!this.dialog){
+				this.instantiateDialog();	
+			}
+			
+			this.dialog.dialog("open");
+			this.setDialogContent();
+		},
+		
+		instantiateDialog:function(){
+		// summary:
+		// Intantiate a dialog.
+			
+			this.dialog =$( "<div></div>" )
+	 		    .appendTo( "body" ).dialog({
+	 		      autoOpen: false,
+	 		      dialogClass: "no-close", 
+	 		      height: 300,
+	 		      width: 350,
+	 		      modal: true,	 		      
+	 		      title:"Condition Editor",	 		      
+	 		      buttons: {
+	 		    	 OK: function() {
+	 		    		//retrieve the conditionEditor and call its updateConditon() api
+	 		    		$(this).data("uiDialog").conditionEditor.updateCondition();
+	 		    		$(this).data("uiDialog").close();
+		 		     },
+	 		        Cancel: function() {
+	 		        	$(this).data("uiDialog").close();
+	 		        }
+	 		      },
+	 		      close: function() {
+	 		        /*form[ 0 ].reset();
+	 		        allFields.removeClass( "ui-state-error" );*/
+	 		      }
+	 		      
+	 		    });
+			// link the dialog to the outter conditionEditor
+			this.dialog.data("uiDialog").conditionEditor =this;
+		}, 
 
     	debug:true
     });  // end widget
