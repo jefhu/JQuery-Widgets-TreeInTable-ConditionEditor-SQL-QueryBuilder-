@@ -825,56 +825,66 @@
 	    setTreetableDrag:function(){
 	    	var children = this.getAllRowNodes();
 			for (var i=0; i<children.length;i++){
-				children[i].treeintableWidget = this;
-				$(children[i]).each(function(index, obj) {
-					
-					$(obj).draggable({
-						  helper: "clone",
-						  opacity: .75,
-						  refreshPositions: true,
-						  revert: "invalid",
-						  revertDuration: 300,
-						  scroll: true,
-						  containment:  obj.treeintableWidget.getDragContainment()  // '.cpmTable'
-						});
-				});
+				var trNode = children[i];
+				this.setTreetableDragOne(trNode);				
 			}
+	    },
+	    
+	    setTreetableDragOne:function(trNode){
+	    	trNode.treeintableWidget = this;
+			$(trNode).each(function(index, obj) {
+				
+				$(obj).draggable({
+					  helper: "clone",
+					  opacity: .75,
+					  refreshPositions: true,
+					  revert: "invalid",
+					  revertDuration: 300,
+					  scroll: true,
+					  containment:  obj.treeintableWidget.getDragContainment()  // '.cpmTable'
+					});
+			});
 	    },
 	    
 	    setTreetableDrop:function(){
 	    	var children = this.getAllRowNodes();
 			for (var i=0; i<children.length;i++){
-				children[i].treeintableWidget = this;
-				$(children[i]).each(function(index, obj) {
-					//console.log(obj);
-					$(obj).droppable({
-					   // accept: ".cpmtableItemNormal",
-					    accept: function( draggable, droppable){
-					    	var treeintableWidget = obj.treeintableWidget;
-					    	return treeintableWidget.checkIfRowItemIsDraggable();
-					    },
-					    drop: function(e, ui) {
-					      var dragEl = ui.draggable[0];  // get the on-the-drag tr
-					      var treeintableWidget = dragEl.treeintableWidget;
-					      var dropToNode = this;  // here "this" is the drop-to tr. 
-					      //check dragEl can not be dropped to its subTree() list.
-					      if(treeintableWidget.checkIfRowItemCanDropHere(dragEl ,dropToNode)){
-					         treeintableWidget.moveTreeNode(dragEl, dropToNode );
-					      }
-					       
-					    },
-					    hoverClass: "accept",
-					    over: function(e, ui) {
-					    	var dragEl = ui.draggable[0];  // get the on-the-drag tr
-					    	var treeintableWidget = dragEl.treeintableWidget;
-						    var dropToNode = this;  // here "this" is the drop-to tr. 
-						    if (!dropToNode.treetableArrayItem.isLeafNode && ! dropToNode.treetableArrayItem.expanded){
-						    	treeintableWidget.expandOrCollapseByRowitem(dropToNode, dropToNode.expandieWidget);
-						    }					     
-					    }
-					});
+				var trNode = children[i];
+				this.setTreetableDropOne(trNode);				
+			} //end for
+	    },
+	    
+	    setTreetableDropOne:function(trNode){
+	    	trNode.treeintableWidget = this;
+	    	$(trNode).each(function(index, obj) {
+				//console.log(obj);
+				$(obj).droppable({
+				   // accept: ".cpmtableItemNormal",
+				    accept: function( draggable, droppable){
+				    	var treeintableWidget = obj.treeintableWidget;
+				    	return treeintableWidget.checkIfRowItemIsDraggable();
+				    },
+				    drop: function(e, ui) {
+				      var dragEl = ui.draggable[0];  // get the on-the-drag tr
+				      var treeintableWidget = dragEl.treeintableWidget;
+				      var dropToNode = this;  // here "this" is the drop-to tr. 
+				      //check dragEl can not be dropped to its subTree() list.
+				      if(treeintableWidget.checkIfRowItemCanDropHere(dragEl ,dropToNode)){
+				         treeintableWidget.moveTreeNode(dragEl, dropToNode );
+				      }
+				       
+				    },
+				    hoverClass: "accept",
+				    over: function(e, ui) {
+				    	var dragEl = ui.draggable[0];  // get the on-the-drag tr
+				    	var treeintableWidget = dragEl.treeintableWidget;
+					    var dropToNode = this;  // here "this" is the drop-to tr. 
+					    if (!dropToNode.treetableArrayItem.isLeafNode && ! dropToNode.treetableArrayItem.expanded){
+					    	treeintableWidget.expandOrCollapseByRowitem(dropToNode, dropToNode.expandieWidget);
+					    }					     
+				    }
 				});
-			}
+			});
 	    },
 	    
 	    setTreetableDragAndDrop:function(){
@@ -907,7 +917,7 @@
 		    	 var currentRowItem = subTree[i];
 		    	 this.updateIndentLevel(currentRowItem, currentRowItem.treetableArrayItem.indentLevel + indentDiff);
 		    	 currentRowItem.parentNode.removeChild(currentRowItem);
-			     dropToNode.parentNode.insertBefore( currentRowItem, dropToNode);
+		    	 dropToNode.parentNode.insertBefore( currentRowItem, dropToNode);		    	 
 			     //DONT'T run animation here, it will mess UI!!!! this.moveTreeNodeAnimation(currentRowItem);			     
 		     }
 	    },

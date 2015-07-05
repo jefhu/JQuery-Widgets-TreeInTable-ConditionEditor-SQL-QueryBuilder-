@@ -379,7 +379,10 @@
            
             var i = this.getAllRowNodes().length;
             var trNode = this.buildTableRow(this.store, obj, i, this.tableNode);
-            this.moveTreeNode(trNode, selectedNode );
+            //this.moveTreeNode(trNode, selectedNode );
+            $(trNode).insertBefore(this.selectedRow);
+            this.setTreetableDragOne(trNode);
+            this.setTreetableDropOne(trNode);
 		}, 
 		
 		buildNewConditionTrRow:function(opWidget, selectedNode){
@@ -389,14 +392,26 @@
 	    	obj.isLeafNode=true;
 	    	obj.expanded=false;
 	    	obj.dataItem= dataObj;
-            obj.indentLevel = selectedNode.treetableArrayItem.indentLevel;
+		    if (this.isParentItem(this.selectedRow.treetableArrayItem.dataItem)){
+		    	 obj.indentLevel = selectedNode.treetableArrayItem.indentLevel+1;
+		    }else{
+	            obj.indentLevel = selectedNode.treetableArrayItem.indentLevel;
+			}
               
             obj.type="BinaryExpression";
             dataObj["expression"]="[field]==[value]";            
            
             var i = this.getAllRowNodes().length;
             var trNode = this.buildTableRow(this.store, obj, i, this.tableNode);
-            this.moveTreeNode(trNode, selectedNode );
+            //this.moveTreeNode(trNode, selectedNode );
+            if (this.isParentItem(this.selectedRow.treetableArrayItem.dataItem)){
+            	 $(trNode).insertAfter(this.selectedRow);
+		    }else{
+		    	$(trNode).insertBefore(this.selectedRow);
+			}
+            this.setTreetableDragOne(trNode);
+            this.setTreetableDropOne(trNode);
+            
 		}, 
 		
 		actionClickHandler:function(opWidget){
@@ -426,6 +441,7 @@
 			if (!this.selectedRow) return;	
 			var selectedNode = this.selectedRow;			
 			this.buildNewConditionTrRow(opWidget, selectedNode);
+			
 		},
 		
 		invokeActionDelete:function(opWidget){
