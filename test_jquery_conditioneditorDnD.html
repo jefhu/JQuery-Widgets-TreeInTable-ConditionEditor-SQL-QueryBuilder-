@@ -6,17 +6,19 @@
 		
         <link href="jquery-ui-1.11.4/jquery-ui.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
-        <link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
-        <style>
-        .cpmTable td {
-        	min-width:365px;
-        }
-        
-        .buttonclass{
-        	width:365px;
-        }
-        </style>
-	</head>
+		<link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
+		<style>
+			.cpmTable td {
+				min-width: 365px;
+			}
+			
+			.buttonclass {
+				width: 365px;
+			}
+			
+			
+		</style>
+</head>
 	<body>
 	    <div id="datastore3" class="datastore"></div>
     	<div id="treeintable3" class="treeintable">Condition Editor (Drag and Drop) </div> 
@@ -47,7 +49,7 @@
 		    	 try{
 		    		 var mathJson =esprima.parse(mathString);		    		 
 		    		 
-		    		 //treeintableWidget3.element.children()[0].remove();
+		    		 //treeintableWidget3.element.children()[0].remove();  //failed in IE and Safari
 		    		$(treeintableWidget3.element).empty();
 		    		
 		    		 var store3 =$( "<div></div>" )

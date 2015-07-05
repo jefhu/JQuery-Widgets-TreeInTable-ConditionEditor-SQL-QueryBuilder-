@@ -55,23 +55,17 @@
 		
 		decorateTableNode:function(tableNode){
 		//summary:
-		//Oerride super's api
+		//Override super's api
 			tableNode.addClass("conditioneditor");
 		},
 
-		getExpandieWidgetInnerHTMLText :function(expandieWidget){
-			/*var imageNode = document.createElement("img"); 
-			var imagePath = (expandieWidget.treetableArrayItem.expanded)? "img/plus.gif": "img/minus.gif"			
-			imageNode.setAttribute("src", imagePath );
-			expandieWidget.appendChild(imageNode);
-			//innerHTML=imageNode.outerHTML;
-			 */    		
+		getExpandieWidgetInnerHTMLText :function(expandieWidget){				
 			return this._super(expandieWidget);  // how to call super .
 		},
 		
 		setExpandieUI:function(expandieWidget){
-			// summary:
-			// API that style the expandie
+		// summary:
+		// API that style the expandie
 
 			expandieWidget.innerHTML= "&nbsp;&nbsp;&nbsp;&nbsp;"
 			if (expandieWidget.treetableArrayItem.expanded){
@@ -165,11 +159,14 @@
 				return bool;
 		},
 		
-		 getUnwantedAttributeListWhenClone:function(){
-		    	var unwartedAttributeList =['left', 'right'];
-		    	return unwartedAttributeList;
-		    },
-		
+		getUnwantedAttributeListWhenClone:function(){
+		// summary:
+		// This API excludes some fields when cloning object.
+			
+			var unwartedAttributeList =['left', 'right'];
+			return unwartedAttributeList;
+		},
+
 		getTreeNodeJSON:function(rowItem){
 			//summary:
 			// Override parent class's api 
@@ -292,12 +289,12 @@
 	    },	    
 	    
 	    buildConditionButtons:function(headers, i, thNode){
-			// summary:
-			// build "condition" buttons
-				
-				var conditionWidget = this.buildThNodeContentActionNode(headers, i, "Condition");	
-				thNode.appendChild(conditionWidget);
-			},
+    	// summary:
+    	// build "condition" buttons
+
+	    	var conditionWidget = this.buildThNodeContentActionNode(headers, i, "Condition");	
+	    	thNode.appendChild(conditionWidget);
+	    },
 	  
 		
 		buildActionButtons:function(headers, i, thNode){
@@ -312,7 +309,7 @@
 		},
 		
 		
-		 buildThNodeContentActionNode:function(headers, i, symbol){
+		buildThNodeContentActionNode:function(headers, i, symbol){
 		// summary:
 	    // helper function to build action node
 			
@@ -331,12 +328,8 @@
 				table.actionClickHandler(actionWidget);
 				return false;
 			});
-			return actionWidget;
-				
-				
+			return actionWidget;	
 		},
-		
-		
 		
 		operatorClickHandler:function(opWidget){
 			if (opWidget.symbol=="AND"){
@@ -399,10 +392,7 @@
             obj.indentLevel = selectedNode.treetableArrayItem.indentLevel;
               
             obj.type="BinaryExpression";
-            
-			
-            dataObj["expression"]="[field]==[value]";
-            
+            dataObj["expression"]="[field]==[value]";            
            
             var i = this.getAllRowNodes().length;
             var trNode = this.buildTableRow(this.store, obj, i, this.tableNode);
@@ -429,13 +419,10 @@
 		},
 		
 		invokeActionEdit:function(opWidget){
-			//window.alert("[Edit] click is being implemented");
 			this.invokeConditionEditor();
 		},
 		
-		invokeActionCondtion:function(opWidget){
-			//window.alert("[Condition] click is being implemented");		
-			
+		invokeActionCondtion:function(opWidget){			
 			if (!this.selectedRow) return;	
 			var selectedNode = this.selectedRow;			
 			this.buildNewConditionTrRow(opWidget, selectedNode);
@@ -486,6 +473,8 @@
 			$(newText).addClass("cceRowText");		
 			$(columnNode).append(imageNode);
 			$(columnNode).append(newText);
+			columnNode.imageNode = imageNode;
+			columnNode.textNode = newText;
 			return columnNode;
 			//*/
 			//this._super(columnNode, values,trNode, treetableArrayItem, treetableArray,store,repeaterItem, attributes, attributeIndex);
@@ -501,18 +490,144 @@
 		
 		setDialogContent:function(){
 		// summary:
-		// This is an overridable api to set a editor in the dialog.
+		// This is an overridable api to set an editor in the dialog.
 			
 			 var contentNode = $(this.dialog);
-		    	 $(contentNode).button({
-		    		//label: "symbol"		
-		    		 label: this.selectedRow.treetableArrayItem.dataItem.expression  
-	    	    });
+			 if (!this.selectedRow) return;
+			 var formNode = null;
+			 if (this.isParentItem(this.selectedRow.treetableArrayItem.dataItem)){
+				 formNode = this.buildBooleanOpeartorEditForm();
+			 }else{
+				  formNode = this.buildConditionEditForm();
+			 }
+			 contentNode.empty();
+			 contentNode.append(formNode);
+			 this.populateConditionEditorValue();
 		},
+		
+		populateConditionEditorValue:function(){
+			if (this.isParentItem(this.selectedRow.treetableArrayItem.dataItem)){
+				 this.populateConditionEditorLogicalValue()
+			 }else{
+				this.populateConditionEditorExpressionValue();
+			 }
+		},
+		
+		populateConditionEditorLogicalValue:function(){
+			 var contentNode = $(this.dialog);
+			 var values = this.selectedRow.treetableArrayItem.dataItem.operator;
+			 var textValue ="";
+			 if (values == "!"){
+				 textValue="NOT";
+			 }else if (values == "&&"){
+				 textValue="AND";
+			 }else if (values == "||"){
+				 textValue="OR";
+			 }
+			 contentNode.find("#selectOperator").val(textValue);
+		},
+		
+		populateConditionEditorExpressionValue:function(){
+			 var contentNode = $(this.dialog);
+			 var currentItem = this.selectedRow.treetableArrayItem;
+			 var opLeft = currentItem.dataItem.left
+			 var opRight = currentItem.dataItem.right;
+			 var operator = currentItem.dataItem.operator;
+			 
+			 var leftValue = (opLeft && opLeft.name)?opLeft.name: "";
+			 var opValue = (operator)? operator: "";
+			 var rightValue = (opRight && opRight.value)? opRight.value: "";
+			 $( contentNode.find("input")[0]).val(leftValue);
+			 $( contentNode.find("input")[1]).val(opValue);
+			 $( contentNode.find("input")[2]).val(rightValue);
+		},
+		
+		buildConditionEditForm:function(){
+			var formString = ["<form>",
+								"<fieldset>",
+									"<div>" ,
+										"<label  for=’field’>Field:</label>",
+										"<input id=’field’ name=’field’ title=’Please provide field name.’>",
+									"</div>",
+									"<div>",
+										"<label for=’operator’>Operator:</label>",
+										"<input id=’operator’ name=’operator’ title=’Please provide operator.’>",
+									"</div>",
+									"<div>",
+										"<label for=’value’>Value:</label>",
+										"<input id=’value’ name=’value’ title=’value.’>"	,
+									"</div>",
+								"</fieldset>"	,	
+							"</form>"].join('\n');
+			var formNode = $(formString);
+			return formNode;
+		},
+		
+		buildBooleanOpeartorEditForm:function(){
+			var formString =   ["<label for=’selectOperator’>Logical Operator:</label>",
+			                    "<select id='selectOperator'>",
+				      			"<option value='AND'>AND</option>",
+				      			"<option value='OR'>OR</option>",
+				      			"<option value='NOT'>NOT</option>",
+				      			"</select>"].join('\n');
+			var formNode = $(formString);
+			return formNode;
+		}, 
 		
 		updateCondition:function(){
 			if (this.debug) console.log( "ConditionEditor.updateCondition() called" );
+			if (this.isParentItem(this.selectedRow.treetableArrayItem.dataItem)){
+				 this.updateConditionEditorLogicalValue()
+			 }else{
+				this.updateConditionEditorExpressionValue();
+			 }
 		}, 
+		
+		updateConditionEditorLogicalValue:function(){
+			var contentNode = $(this.dialog);
+			 var values = contentNode.find("#selectOperator").val();			 
+			 var textValue ="";
+			 if (values == "NOT"){
+				 textValue="!";
+			 }else if (values == "AND"){
+				 textValue="&&";
+			 }else if (values == "OR"){
+				 textValue="||";
+			 }
+			 this.selectedRow.treetableArrayItem.dataItem.operator=textValue;
+			 this.selectedRow.treetableArrayItem.dataItem.expression=textValue;
+			 var imagePath="";
+			 if (textValue == "!"){
+					imagePath= "img/not.gif";
+				}else if (textValue == "&&"){
+					imagePath= "img/and.gif";
+				}else if (textValue == "||"){
+					imagePath= "img/or.gif";
+				}
+			 $(this.selectedRow).find("img")[0].setAttribute("src", imagePath);
+			 $(this.selectedRow).find("td")[0].textNode.nodeValue=values;
+			 $(this.selectedRow).hide().fadeIn('fast');
+		},
+		
+		updateConditionEditorExpressionValue:function(){
+			var contentNode = $(this.dialog);
+			var currentItem = this.selectedRow.treetableArrayItem;
+
+			var inputFieldName =  $( contentNode.find("input")[0]).val();
+			var inputOperator = $( contentNode.find("input")[1]).val();
+			var inputValue = $( contentNode.find("input")[2]).val();
+
+			if (! currentItem.dataItem.left) currentItem.dataItem.left={};
+			currentItem.dataItem.left.name =inputFieldName
+			if (! currentItem.dataItem.right) currentItem.dataItem.right={};
+			currentItem.dataItem.right.value = inputValue;			
+			currentItem.dataItem.operator = inputOperator;
+
+			var expressionString =  inputFieldName + " " + inputOperator + " \"" + inputValue + "\"";
+			currentItem.dataItem['expression']=expressionString
+			$(this.selectedRow).find("td")[0].textNode.nodeValue=expressionString;
+
+		},
 		
 		invokeConditionEditor:function(){
 		// summary:
@@ -527,19 +642,31 @@
 			this.setDialogContent();
 		},
 		
+		getConditionEditorDialogHeigh:function(){
+			return 330;
+		},
+		
+		getConditionEditorDialogWidth:function(){
+			return 350;
+		},
+		
+		getConditionEditorDialogTitle:function(){
+			return "Condition Editor";
+		},
+		
 		instantiateDialog:function(){
 		// summary:
 		// Intantiate a dialog.
 			
-			this.dialog =$( "<div></div>" )
+			this.dialog =$( "<div class='conditionEditorDialog'></div>" )
 	 		    .appendTo( "body" ).dialog({
 	 		      autoOpen: false,
 	 		      dialogClass: "no-close", 
-	 		      height: 300,
-	 		      width: 350,
+	 		      height: this.getConditionEditorDialogHeigh(),
+	 		      width: this.getConditionEditorDialogWidth(),
 	 		      modal: true,	 		      
-	 		      title:"Condition Editor",	 		      
-	 		      buttons: {
+	 		      title:this.getConditionEditorDialogTitle(),
+	 		     buttons: {
 	 		    	 OK: function() {
 	 		    		//retrieve the conditionEditor and call its updateConditon() api
 	 		    		$(this).data("uiDialog").conditionEditor.updateCondition();

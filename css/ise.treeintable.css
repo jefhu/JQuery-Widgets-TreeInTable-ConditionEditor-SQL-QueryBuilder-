@@ -146,3 +146,13 @@
 	 background-image: url("../img/minus.gif");
 	 background-size: 18px 18px;
 }
+
+/* conditionEditorDialog */
+.conditionEditorDialog label {
+	display: inline-block;
+	width: 10em;
+}
+			
+.conditionEditorDialog	fieldset div {
+	margin-bottom: 5px;
+}
