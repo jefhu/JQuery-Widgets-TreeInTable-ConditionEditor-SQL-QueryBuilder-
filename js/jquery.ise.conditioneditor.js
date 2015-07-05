@@ -28,8 +28,12 @@
  "invokeConditionEditor()" is the key api that let use edit condition-editor tree node. Application should override this API to customize condition editing.
  	
  	this.instantiateDialog();	//ConditionEditor invokes a dialog to present UI for editing condition.
+	
 	this.setDialogContent();    //Load Editor UI to the dialog.
-	this.updateCondition();     //Retrieve value from Editor UI and update the ConditionEditor Tree.  
+	this.populateConditionEditorValue() // Polulate values to editor 
+	this.updateCondition();     //Retrieve value from Editor UI and update the ConditionEditor Tree. 
+	 
+	The above 3 APIs are inter-coupled.  
  
   buildThNodeContent(..) builds &&/OR/NOT and other buttons for manipulating the ConditionEditor Tree.
  */
@@ -495,8 +499,8 @@
 		}, 
 		
 		fillColumnNode:function(columnNode, values,trNode, treetableArrayItem, treetableArray,store,repeaterItem, attributes, attributeIndex){
-			// summary:
-			// override super api
+		// summary:
+		// override super api
 			
 			var textValue = values;
 			var imageNode = document.createElement("img"); 
@@ -551,6 +555,9 @@
 		},
 		
 		populateConditionEditorValue:function(){
+		//Summary:
+		//Populate the condition edit UI with the selected ConditionEditor tree-node.
+			
 			if (this.isParentItem(this.selectedRow.treetableArrayItem.dataItem)){
 				 this.populateConditionEditorLogicalValue()
 			 }else{
@@ -559,6 +566,9 @@
 		},
 		
 		populateConditionEditorLogicalValue:function(){
+		// summary:
+		// Populate logical operator value to Editor UI.
+			
 			 var contentNode = $(this.dialog);
 			 var values = this.selectedRow.treetableArrayItem.dataItem.operator;
 			 var textValue ="";
@@ -573,6 +583,9 @@
 		},
 		
 		populateConditionEditorExpressionValue:function(){
+		// summary:
+		// Populate condition value to Editor UI.  This is UI sepcific.
+			
 			 var contentNode = $(this.dialog);
 			 var currentItem = this.selectedRow.treetableArrayItem;
 			 var opLeft = currentItem.dataItem.left
@@ -588,6 +601,10 @@
 		},
 		
 		buildConditionEditForm:function(){
+		// summary:
+		// Build a simple form for use to edit a ConditionEditor tree node.
+		// Application should override this API to meet application specific requirement.
+			
 			var formString = ["<form>",
 								"<fieldset>",
 									"<div>" ,
@@ -609,6 +626,9 @@
 		},
 		
 		buildBooleanOpeartorEditForm:function(){
+		// summary:
+		// build select control to let user pick AND/OR/NOT operator
+			
 			var formString =   ["<label for=’selectOperator’>Logical Operator:</label>",
 			                    "<select id='selectOperator'>",
 				      			"<option value='AND'>AND</option>",
@@ -620,6 +640,9 @@
 		}, 
 		
 		updateCondition:function(){
+		// summary:
+		// Retrieve values from editor and render the ConditionEditor Tree.
+			
 			if (this.debug) console.log( "ConditionEditor.updateCondition() called" );
 			if (this.isParentItem(this.selectedRow.treetableArrayItem.dataItem)){
 				 this.updateConditionEditorLogicalValue()
@@ -629,6 +652,9 @@
 		}, 
 		
 		updateConditionEditorLogicalValue:function(){
+		// summary:
+		// Render logical operator tree node.
+			
 			var contentNode = $(this.dialog);
 			 var values = contentNode.find("#selectOperator").val();			 
 			 var textValue ="";
@@ -655,6 +681,9 @@
 		},
 		
 		updateConditionEditorExpressionValue:function(){
+		// summary:
+		// Render condition tree node.
+			
 			var contentNode = $(this.dialog);
 			var currentItem = this.selectedRow.treetableArrayItem;
 
