@@ -416,10 +416,13 @@
 		actionMenuClickHandler:function(value){
 			//alert("menu click:" + value);
 			if (value == "Validate"){
-				this.validate();
+				var valid = this.validate();
+				if (!valid || valid.length==0){
+					this.handleValidationPass();
+				}
 			}else if(value == "Summary"){
 				var mathString = treeintableWidget3.getMathExpression();
-		    	this.actionExtraMenuClickHandler(mathString);
+		    	this.handleMenuSummary(mathString);
 			}else if(value == "Get JSON"){
 				var mathString = treeintableWidget3.getMathExpression();
 				 var mathJsonObject =esprima.parse(mathString);
@@ -841,18 +844,26 @@
 		}, 
 		
 		isNotNode:function(trNode){
+		//summary:
+		//check if it is a "NOT" operator
 			return  (trNode.treetableArrayItem && trNode.treetableArrayItem.dataItem.operator && trNode.treetableArrayItem.dataItem.operator=="!" )? true:false;
 		},
 		
 		isAndNode:function(trNode){
+		//summary:
+		//check if it is a "AND" operator
 			return  (trNode.treetableArrayItem &&  trNode.treetableArrayItem.dataItem.operator && trNode.treetableArrayItem.dataItem.operator=="&&" )? true:false;
 		},
 		
 		isOrNode:function(trNode){
+		//summary:
+		//check if it is a "OR" operator
 			return  (trNode.treetableArrayItem && trNode.treetableArrayItem.dataItem.operator && trNode.treetableArrayItem.dataItem.operator=="||" )? true:false;
 		},
 		
 		isConditonNode:function(trNode){
+		//summary:
+		//check if it is a "conditon" 
 			return (trNode.treetableArrayItem &&  !this.isNotNode(trNode) && !this.isAndNode(trNode) && !this.isOrNode(trNode))? true: false;
 		},
 		
@@ -878,10 +889,17 @@
 					this.clearValidationErrors();
 				}
 				return errorList;
-			}else{
-				return null;
+			}else{				
 				this.clearValidationErrors();
-			}				
+				return null;
+			}	
+			
+		},
+		
+		handleValidationPass:function(){
+		// summary:
+		// Default implementation of handling validation pass.
+			alert("Condition Editor configuration is valid");
 		},
 		
 		isToProcessValidationErrorAfterValidate:function(){
