@@ -104,12 +104,19 @@ console.log(  treeintableWidget3.getRootLevelRowItems());
 			return storeItems;
 		},
 		
+		prepareMessages:function(){
+		// summary:
+		// Add messages for Condition-Editor widget.  Applicaition or extended class should override this API.
+			
+		}, 
+		
 		buildTreeTable:function(){
 		// summary:
 		// build UI TreeTable
+			
 			if (this._debug) console.log("treeintable.buildTreeTable()");
 			var self = this;
-			
+			this.prepareMessages();
 			var tableNode = this.buildTableDomNode();//$("<table class='cpmTable' id=" + self.id + "></table>");
 			this.decorateTableNode(tableNode);
 			this.tableNode = tableNode;
@@ -719,7 +726,7 @@ console.log(  treeintableWidget3.getRootLevelRowItems());
 				var children = new Array();
 				var thNtrNodes = $(cpmTable.tableNode).find('tr');
 				for (var i=0;i<thNtrNodes.length;i++){
-					if (thNtrNodes[i].tagName.toLowerCase()=="tr" && thNtrNodes[i].treetableArrayItem ){
+					if (thNtrNodes[i].tagName.toLowerCase()=="tr" && thNtrNodes[i].treetableArrayItem  && thNtrNodes[i].children.length>0){
 						children.push(thNtrNodes[i]);
 					}
 				}
@@ -1210,6 +1217,17 @@ console.log(  treeintableWidget3.getRootLevelRowItems());
 	    	}
 	    	return cloned;
 	    },
+	    
+	    messages:{			
+		},
+		
+		getMessage:function(key){
+			return this.messages[key];
+		}, 
+		
+		addMessage:function(key, msg){
+			this.messages[key]=msg;
+		}, 
 	    
 	    dummy:null
 		

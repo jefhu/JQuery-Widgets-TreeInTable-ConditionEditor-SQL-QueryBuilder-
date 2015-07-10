@@ -82,6 +82,14 @@
   background-color: #fff;
 }
 
+.cpmTable.conditioneditor .validationError{
+	border:1px solid red;
+}
+
+.cpmTable.conditioneditor .selectmenu{
+	width :120px;
+	height: 20px;
+}
 .cpmTable.conditioneditor  .cpmtableItemHover{
 	background-color: #e4e5e6; /*hover cpmtable item */
 }
@@ -145,6 +153,22 @@
 .cpmTable .cpmTableCCEExpendieCollapse{
 	 background-image: url("../img/minus.gif");
 	 background-size: 18px 18px;
+}
+
+/* selectmenu in CCE table header*/
+.cpmTable.conditioneditor  .ui-state-default{
+	display:inline-flex;
+	font-size: 1em;
+	font-weight: normal;
+}
+
+.cpmTable.conditioneditor .ui-menu .ui-menu-item {
+	font-size: 1em;
+}
+
+.cpmTable.conditioneditor   .ui-selectmenu-button span.ui-selectmenu-text {
+	padding:0px 8px;
+	font-size: 1em;
 }
 
 /* conditionEditorDialog */

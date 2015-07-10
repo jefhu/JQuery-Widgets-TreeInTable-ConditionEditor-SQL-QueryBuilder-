@@ -81,9 +81,27 @@
 			var indentLevel =0;
 			this.processStoreItemsBeforeBuildTableHelper(currentItem, treepathArray, indentLevel,  null);  //start travsing
 			
-			return treepathArray; //storeItems;
-			
-			
+			return treepathArray; //storeItems;		
+		},
+		
+		
+		prepareMessages:function(){
+		// summary:
+		// add messages for Condition-Editor widget			
+			this.prepareDefaultMessages();
+			this.prepareExtraMessages();
+		}, 
+		
+		prepareDefaultMessages:function(){
+		// summary:
+		// add default messages.
+			this.addMessage("CheckOperatorNOTErrorMessage","NOT operator node shall contain only one child node");
+			this.addMessage("CheckOperatorANDORErrorMessage", "AND or OR operator node shall contain at least two nodes");
+		},
+		
+		prepareExtraMessages:function(){
+		// summary
+		// This is an override-able api for application to add extra messages. 
 		},
 		
 		decorateTableNode:function(tableNode){
@@ -286,6 +304,10 @@
 				thNode.appendChild(separator2[0]);				
 				this.buildActionButtons(headers, i, thNode);
 				
+				var separator3 = this.buildToolbarSeparator();
+				thNode.appendChild(separator3[0]);		
+				this.buildSelectMenu(headers, i, thNode);
+				
 				return thNode;
 	    },
 	    
@@ -363,6 +385,63 @@
 			});
 			return actionWidget;	
 		},
+		
+		buildSelectMenu:function(headers, i, thNode){			
+			var selectNode = document.createElement("select"); 
+			var selectString = [  "<option>Select</option>",
+			                     "<option>Validate</option>",
+				                    "<option>Summary</option>",
+				                    "<option>Get JSON</option>"
+				                 ].join('\n');
+			$(selectNode).html(selectString);
+			selectNode.treeintable=this;	
+			thNode.appendChild(selectNode);
+			this.buildSelectMenuHook(selectNode);
+			var selectWidget = $( selectNode).selectmenu({"width":"100px"} ); //we need this "width" setting
+
+			$(selectNode).on('selectmenuchange',function(){ 
+			    var value = $(this).val();			    
+			    $(selectNode).val('Select');
+			    $(selectNode).selectmenu("refresh");
+			    var table = this.treeintable;
+				table.actionMenuClickHandler(value);
+			});
+		}, 
+		
+		buildSelectMenuHook:function(selectNode){
+		//summary:
+		// This is an override-able API that let application to do something on the menu control.
+		},
+		
+		actionMenuClickHandler:function(value){
+			//alert("menu click:" + value);
+			if (value == "Validate"){
+				this.validate();
+			}else if(value == "Summary"){
+				var mathString = treeintableWidget3.getMathExpression();
+		    	this.actionExtraMenuClickHandler(mathString);
+			}else if(value == "Get JSON"){
+				var mathString = treeintableWidget3.getMathExpression();
+				 var mathJsonObject =esprima.parse(mathString);
+		    	 this.handleMenuGetJSON(mathJsonObject);
+			}else{
+				this.actionExtraMenuClickHandler(value);
+			}
+		}, 
+		
+		actionExtraMenuClickHandler:function(value){
+		// summary:
+		// This is an override-able API for applcation to handle extra menu items.
+			//do nothing
+		}, 
+		
+		handleMenuSummary:function(mathString){
+			alert("Boolean Expresson:\n" + mathString);
+		}, 
+		
+		handleMenuGetJSON:function(mathJsonObject){
+			alert("Boolean Expresson:\n" + JSON.stringify(mathJsonObject, null, 5));
+		}, 
 		
 		operatorClickHandler:function(opWidget){
 			if (opWidget.symbol=="AND"){
@@ -760,6 +839,132 @@
 			// link the dialog to the outter conditionEditor
 			this.dialog.data("uiDialog").conditionEditor =this;
 		}, 
+		
+		isNotNode:function(trNode){
+			return  (trNode.treetableArrayItem && trNode.treetableArrayItem.dataItem.operator && trNode.treetableArrayItem.dataItem.operator=="!" )? true:false;
+		},
+		
+		isAndNode:function(trNode){
+			return  (trNode.treetableArrayItem &&  trNode.treetableArrayItem.dataItem.operator && trNode.treetableArrayItem.dataItem.operator=="&&" )? true:false;
+		},
+		
+		isOrNode:function(trNode){
+			return  (trNode.treetableArrayItem && trNode.treetableArrayItem.dataItem.operator && trNode.treetableArrayItem.dataItem.operator=="||" )? true:false;
+		},
+		
+		isConditonNode:function(trNode){
+			return (trNode.treetableArrayItem &&  !this.isNotNode(trNode) && !this.isAndNode(trNode) && !this.isOrNode(trNode))? true: false;
+		},
+		
+		validate:function(){
+		// summary:
+		// validate the CCE-Tree. Internally, it calls validateHelper(..)
+			var list = this.getAllRowNodes();
+			var len = list.length;
+			var errorList =[];
+			if (len >0){				
+				for (var i =0; i< len; i++){
+					var temp = list[i];
+					var validationErrorr = this.validateHelper(temp);					
+					if (validationErrorr){
+						errorList.push(validationErrorr);
+					}
+				}
+				if (errorList.length>0){
+					if (this.isToProcessValidationErrorAfterValidate()){
+						this.processValidationErrorLsit(errorList);
+					}
+				}else{
+					this.clearValidationErrors();
+				}
+				return errorList;
+			}else{
+				return null;
+				this.clearValidationErrors();
+			}				
+		},
+		
+		isToProcessValidationErrorAfterValidate:function(){
+		// summary:
+		// This is the API that controls whether to process validation-errors after validate() call.
+			return true;
+		}, 
+		
+		processValidationErrorLsit:function(errorList){
+		// Summary:
+		// Loop through the input "errorList" and add a red-border to the erred tree-node.
+			
+			for (var i=0; i<errorList.length; i++){
+				var obj = errorList[i];
+			    var children=obj.row.children;
+			    for (var j=0; j<children.length; j++){
+			    	$(children[j]).addClass("validationError");
+			    	if (!children[j].originalTitle){
+			    		children[j].originalTitle =children[j].title;
+			    	}
+			    	children[j].title = obj.message;
+			    }
+			}
+		},
+		
+		clearValidationErrors:function(){
+		// Summary:
+		// Once CCE-Tree is validated, clear all CCE-tree nodes.  This api is logically coupled with processValidationErrorLsit(..)
+			var list = this.getAllRowNodes();
+			for (var i=0; i<list.length; i++){
+				var children=list[i].children;
+				for (var j=0; j<children.length; j++){
+			    	$(children[j]).removeClass("validationError");
+			    	if (children[j].originalTitle){
+			    		children[j].title = children[j].originalTitle;
+			    	}
+			    }
+		    }
+		}, 
+		
+		validateHelper:function(trNode){
+		// summary:
+		// Check the type of input "trNode" and delegate validation logic to different API.
+			
+			if (this.isNotNode(trNode)){
+				return this.checkOperatorNOT(trNode);
+			}else if (this.isAndNode(trNode) || this.isOrNode(trNode)  ){
+				return this.checkOperatorANDOR(trNode);
+			}else if (this.isConditonNode(trNode) ){
+				return this.checkConditionValidity(trNode);
+			}
+		},
+		
+		checkOperatorNOT:function(trNode){
+			var numChild = this.getDirectChildren(trNode).length;
+			if (numChild !=1){
+				var obj ={};
+				obj.row = trNode;
+				obj.message = this.getMessage("CheckOperatorNOTErrorMessage");
+				return obj;
+			}
+			return null;
+		}, 
+		
+		
+		checkOperatorANDOR:function(trNode){
+			var numChild = this.getDirectChildren(trNode).length;
+			if (numChild <2){
+				var obj ={};
+				obj.row = trNode;
+				obj.message = this.getMessage("CheckOperatorANDORErrorMessage");
+				return obj;
+			}
+			return null;
+		}, 
+
+		checkConditionValidity:function(trNode){
+			return null;
+		}, 
+		
+		
+		
+		
 
     	debug:true
     });  // end widget
