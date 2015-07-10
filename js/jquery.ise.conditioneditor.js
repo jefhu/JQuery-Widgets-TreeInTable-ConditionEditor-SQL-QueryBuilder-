@@ -95,6 +95,7 @@
 		prepareDefaultMessages:function(){
 		// summary:
 		// add default messages.
+			this.addMessage("CheckCCERootLevelErrorMessage", "There should be only one root level node in Condition Editor tree");
 			this.addMessage("CheckOperatorNOTErrorMessage","NOT operator node shall contain only one child node");
 			this.addMessage("CheckOperatorANDORErrorMessage", "AND or OR operator node shall contain at least two nodes");
 		},
@@ -867,6 +868,8 @@
 			return (trNode.treetableArrayItem &&  !this.isNotNode(trNode) && !this.isAndNode(trNode) && !this.isOrNode(trNode))? true: false;
 		},
 		
+		
+		
 		validate:function(){
 		// summary:
 		// validate the CCE-Tree. Internally, it calls validateHelper(..)
@@ -879,15 +882,22 @@
 					var validationErrorr = this.validateHelper(temp);					
 					if (validationErrorr){
 						errorList.push(validationErrorr);
+					}else{
+						this.clearOneRowValidationError(temp);
 					}
 				}
+				var rootLevelError = this.validateRootLevel();
+				if (rootLevelError){
+					errorList.push(rootLevelError);
+				}
+				// hightlight or clear validation errors.
 				if (errorList.length>0){
 					if (this.isToProcessValidationErrorAfterValidate()){
 						this.processValidationErrorLsit(errorList);
 					}
-				}else{
+				}else{					
 					this.clearValidationErrors();
-				}
+				}				
 				return errorList;
 			}else{				
 				this.clearValidationErrors();
@@ -930,15 +940,31 @@
 		// Once CCE-Tree is validated, clear all CCE-tree nodes.  This api is logically coupled with processValidationErrorLsit(..)
 			var list = this.getAllRowNodes();
 			for (var i=0; i<list.length; i++){
-				var children=list[i].children;
-				for (var j=0; j<children.length; j++){
-			    	$(children[j]).removeClass("validationError");
-			    	if (children[j].originalTitle){
-			    		children[j].title = children[j].originalTitle;
-			    	}
-			    }
+				var trNode = list[i];
 		    }
 		}, 
+		
+		clearOneRowValidationError:function(trNode){
+			var children=trNode.children;
+			for (var j=0; j<children.length; j++){
+		    	$(children[j]).removeClass("validationError");
+		    	if (children[j].originalTitle){
+		    		children[j].title = children[j].originalTitle;
+		    	}
+		    }
+		}, 
+		
+		validateRootLevel:function(){
+			var list = this.getRootLevelRowItems();
+			if (list.length>1){
+				var trNode = list[0];
+				var obj ={};				
+				obj.row = trNode;
+				obj.message = this.getMessage("CheckCCERootLevelErrorMessage");
+				return obj;
+			}
+			return null;
+		},
 		
 		validateHelper:function(trNode){
 		// summary:
