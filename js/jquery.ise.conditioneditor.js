@@ -398,7 +398,7 @@
 			selectNode.treeintable=this;	
 			thNode.appendChild(selectNode);
 			this.buildSelectMenuHook(selectNode);
-			var selectWidget = $( selectNode).selectmenu({"width":"100px"} ); //we need this "width" setting
+			var selectWidget = this.buildSelectMenuWidget(selectNode);
 
 			$(selectNode).on('selectmenuchange',function(){ 
 			    var value = $(this).val();			    
@@ -408,6 +408,11 @@
 				table.actionMenuClickHandler(value);
 			});
 		}, 
+		
+		buildSelectMenuWidget:function(selectNode){
+			var selectWidget =  $( selectNode).selectmenu({"width":"110px"} ); //we need this "width" setting
+			return selectWidget;
+		},
 		
 		buildSelectMenuHook:function(selectNode){
 		//summary:

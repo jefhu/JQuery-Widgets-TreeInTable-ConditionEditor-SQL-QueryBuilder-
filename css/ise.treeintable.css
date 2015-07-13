@@ -160,10 +160,22 @@
 	display:inline-flex;
 	font-size: 1em;
 	font-weight: normal;
-}
+} 
 
 .cpmTable.conditioneditor .ui-menu .ui-menu-item {
 	font-size: 1em;
+}
+
+.cpmTable.conditioneditor .ui-selectmenu-button{	                 
+	/* margin-bottom: -8px; */
+	top:8px;
+} 
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+ 
+    .cpmTable.conditioneditor .ui-selectmenu-button{	                 
+		margin-bottom: -8px; 
+		top:0px; 
+	} 
 }
 
 .cpmTable.conditioneditor   .ui-selectmenu-button span.ui-selectmenu-text {
