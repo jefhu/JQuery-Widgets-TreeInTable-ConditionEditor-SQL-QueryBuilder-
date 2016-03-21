@@ -22,12 +22,24 @@
 	<body>
 	    <div id="datastore3" class="datastore"></div>
     	<div id="treeintable3" class="treeintable">Condition Editor (Drag and Drop) </div> 
-    	<br/><br/>   	
+    	<br/>
+    	<p>
+    	Write you search criteria below and click "Parse Expression To Condition Tree" button.
+    	</p>    	
         <textarea rows="20" cols="50" id="textarea" >(sourceIp=="10.1.2.49")||(priority >= 1 )&& (device !="linksys")</textarea>
         <br/><br/> 
         <input class ="buttonclass" type="button" id="load" value="Parse Expression To Condition Tree" style="width ="/>
          <br/><br/>
         <input class ="buttonclass" type="button" id="math" value="Get Boolean Expression From Condition Tree" />
+         <br/><br/>
+        <input class ="buttonclass" type="button" id="json" value="Get JSON From Condition Tree" />
+         <br/>
+        <p>
+        	This widget enables user to configure data search criteria. <br> 
+        	User can write down search criteria and let the widget parse the string expression to Condition-Editor-Tree.<br>
+        	User then use drag and drop to arrange condition. <br>
+        	Service provider control which fields are exposed to user.        	
+        </p>
       
 		
 		<script src="jquery-ui-1.11.4/external/jquery/jquery.js"></script>
@@ -69,6 +81,12 @@
 		    $("#math").click(function(){
 		    	var mathString = treeintableWidget3.getMathExpression();
 		    	alert("Boolean Expresson:\n" + mathString);
+		    });
+		    
+		    $("#json").click(function(){
+		    	var mathString = treeintableWidget3.getMathExpression();
+		    	 var mathJson =esprima.parse(mathString);	
+		    	alert("JSON (you can submit to sever to validate and  search data) \n" + JSON.stringify(mathJson, null, " "));
 		    });
 		});
 		

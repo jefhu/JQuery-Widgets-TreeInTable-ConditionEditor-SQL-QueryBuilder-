@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jQuery UI Autocomplete - Combobox</title>
+    <link href="jquery-ui-1.11.4/jquery-ui.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
+	<link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
+	<script src="jquery-ui-1.11.4/external/jquery/jquery.js"></script>
+	<script src="jquery-ui-1.11.4/jquery-ui.js"></script>
+	<!--  
+	<script type="text/javascript" src="js/jquery.ise.datastore.js"></script>
+	<script type="text/javascript" src="js/jquery.ise.treeintable.js"></script>
+	<script type="text/javascript" src="js/jquery.ise.conditioneditor.js"></script>
+	<script type="text/javascript" src="js/esprima.js"></script>
+	-->
+	<script type="text/javascript" src="js/jquery.ise.versatilecombobox.js"></script>
+	<style>
+		
+	</style>
+	<script>
+	
+	$(function() {
+		$( "#combobox" ).versatilecombobox();
+		
+		$( "#toggle" ).click(function() {
+			$( "#combobox" ).toggle();
+		});
+		
+		$( "#testDiv0" ).versatilecombobox({
+			"url":"data/test_progamming_language.json"
+		});
+	});
+	</script>
+</head>
+<body>
+
+<div class="ui-widget">
+	<label>Your preferred programming language: </label>
+	<select id="combobox">
+		<option value="">Select one...</option>
+		<option value="ActionScript">ActionScript</option>
+		<option value="AppleScript">AppleScript</option>
+		<option value="Asp">Asp</option>
+		<option value="BASIC">BASIC</option>
+		<option value="C">C</option>
+		<option value="C++">C++</option>
+		<option value="Clojure">Clojure</option>
+		<option value="COBOL">COBOL</option>
+		<option value="ColdFusion">ColdFusion</option>
+		<option value="Erlang">Erlang</option>
+		<option value="Fortran">Fortran</option>
+		<option value="Groovy">Groovy</option>
+		<option value="Haskell">Haskell</option>
+		<option value="Java">Java</option>
+		<option value="JavaScript">JavaScript</option>
+		<option value="Lisp">Lisp</option>
+		<option value="Perl">Perl</option>
+		<option value="PHP">PHP</option>
+		<option value="Python">Python</option>
+		<option value="Ruby">Ruby</option>
+		<option value="Scala">Scala</option>
+		<option value="Scheme">Scheme</option>
+	</select>
+</div>
+<button id="toggle">Show underlying select</button>
+<br/>
+<label>Test2 use AJAX to fetch options: </label>
+<div id="testDiv0"/>
+</body>
+</html>

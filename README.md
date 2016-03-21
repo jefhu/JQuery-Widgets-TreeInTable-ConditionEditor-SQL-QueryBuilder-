@@ -41,7 +41,7 @@ Then, you can drag and drop to re-arrange tree-nodes to make the tree look like
 &nbsp;&nbsp;&nbsp;&nbsp;priority == "5"                  
 <br/>
 <br/>
-<a href="http://upload.newmusicland.com/files/jquery-treeintable/test_jquery_conditioneditorDnD.html" target="_blank">See Condition Editor Semo here</a>
+<a href="http://upload.newmusicland.com/files/jquery-treeintable/test_jquery_conditioneditorDnD.html" target="_blank">See Condition Editor demo here</a>
 
 All of these these widgets are based on jquery.ui.Factory.  It means they are 100% extendable. 
 
