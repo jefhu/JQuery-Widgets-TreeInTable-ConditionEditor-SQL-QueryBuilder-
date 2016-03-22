@@ -166,12 +166,11 @@
 	font-size: 1em;
 }
 
-.cpmTable.conditioneditor .ui-selectmenu-button{	                 
-	/* margin-bottom: -8px; */
+.cpmTable.conditioneditor .ui-selectmenu-button{	
 	top:8px;
 } 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
- 
+   /* adjust for chrome and safari browser  */
     .cpmTable.conditioneditor .ui-selectmenu-button{	                 
 		margin-bottom: -8px; 
 		top:0px; 
@@ -191,4 +190,21 @@
 			
 .conditionEditorDialog	fieldset div {
 	margin-bottom: 5px;
+}
+
+/* versatilecombobox */
+.versatilecombobox-combobox {
+	position: relative;
+	display: inline-block;
+}
+.versatilecombobox-combobox-toggle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin-left: -1px;
+	padding: 0;
+}
+.versatilecombobox-combobox-input {
+	margin: 0;
+	padding: 5px 10px;
 }
