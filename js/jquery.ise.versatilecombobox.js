@@ -13,8 +13,8 @@
  * If user keys in text in the "input" part, it will provide suggestions.  If user clicks on the drop-down, all options will display.
  * 
  * 
- * User can provide a "url" to fetch options from server.  Or provide "selectOptions" - an array of [ {label:a, value:a}, {label: b, value:b}...]
- *  
+ * Developer can provide a "url" to fetch options from server.  Or provide "selectOptions" - an array of [ {label:a, value:a}, {label: b, value:b}...]
+ * 
  * 
  * See test_jquery_versatilecomboBox.html for detail
  */
