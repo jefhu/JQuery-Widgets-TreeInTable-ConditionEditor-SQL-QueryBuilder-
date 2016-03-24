@@ -27,13 +27,121 @@
 			$( "#combobox" ).toggle();
 		});
 		
+		$( "#getValue2" ).click(function() {
+			var node = 	$( "#testDiv0" )[0];
+			var vcombox =$(node).data("iseVersatilecombobox")
+			alert(JSON.stringify(vcombox.selectedValue));
+		});
+		
+		$( "#getValue3" ).click(function() {
+			var node = 	$( "#testDiv1" )[0];
+			var vcombox =$(node).data("iseVersatilecombobox")
+			alert(JSON.stringify(vcombox.selectedValue));
+		});
+		
+		$( "#getValue3a" ).click(function() {
+			var node = 	$( "#testDiv1" )[0];
+			var vcombox =$(node).data("iseVersatilecombobox")
+			vcombox.setValue("BackboneJS");
+		});
+		
+		$( "#getValue4" ).click(function() {
+			var node = 	$( "#testDiv2" )[0];
+			var vcombox =$(node).data("iseVersatilecombobox");
+			alert(JSON.stringify(vcombox.selectedValue));
+		});
+		
+		$( "#getValue5" ).click(function() {
+			var node = 	$( "#testDiv2" )[0];
+			var vcombox =$(node).data("iseVersatilecombobox");
+			var newSelectOptions=[
+				              	{
+				            		"label": "ReactJS",
+				            		"value": "React JS"
+				            	},
+				            	{
+				            		"label": "AngularJS",
+				            		"value": "Angular JS"
+				            	},
+				            	{
+				            		"label": "KnockoutJS",
+				            		"value": "KNockoud JS"
+				            	}
+
+				            ];
+			
+			
+			vcombox.selectOptions= newSelectOptions;
+			vcombox.reset();
+		});
+		
+		//-----------------
 		$( "#testDiv0" ).versatilecombobox({
 			"url":"data/test_progamming_language.json"
 		});
+		
+		$( "#testDiv1" ).versatilecombobox({
+			"boolMustSelect":false,
+			"defaultValue":"React JS",
+			"selectOptions": [
+			              	{
+			            		"label": "ReactJS",
+			            		"value": "React JS"
+			            	},
+			            	{
+			            		"label": "AngularJS",
+			            		"value": "Angular JS"
+			            	},
+			            	{
+			            		"label": "KnockoutJS",
+			            		"value": "KNockoud JS"
+			            	}
+
+			            ]
+		});
+		
+		$( "#testDiv2" ).versatilecombobox({
+			"boolMustSelect":false,
+			"boolInputReadOnly":true,
+			"defaultValue":">=",
+			createComplete : function(){
+				console.log("hook in createComplete()");
+			},
+			"selectOptions": [
+			              	{
+			            		"label": "=",
+			            		"value": "="
+			            	},
+			            	{
+			            		"label": ">=",
+			            		"value": ">="
+			            	},
+			            	{
+			            		"label": "<=",
+			            		"value": "<="
+			            	},
+			            	{
+			            		"label": "<",
+			            		"value": "<"
+			            	},
+			            	{
+			            		"label": ">",
+			            		"value": ">"
+			            	}
+
+
+			            ]
+		});
 	});
+	
+	
 	</script>
 </head>
 <body>
+<hr><b>This demonstrates VersatileComboBox Widget. <br/> <br/>This widget provides auto-suggestions when user types. If user clicks the right arrow, it will list all options. <br/> In application, you can control what options to provide for  user</b> </hr>
+<br/>
+<br/>
+
 
 <div class="ui-widget">
 	<label>Your preferred programming language: </label>
@@ -64,8 +172,25 @@
 	</select>
 </div>
 <button id="toggle">Show underlying select</button>
+
 <br/>
 <label>Test2 use AJAX to fetch options: </label>
-<div id="testDiv0"/>
+<div id="testDiv0"></div>
+<br/>
+<button id="getValue2">Get Value from 2nd Combo</button>
+<br/>
+<br/>
+<label>Test3 use provided options, it accepts any type-in text: </label>
+<div id="testDiv1"></div>
+<br/>
+<button id="getValue3">Get Value from 3nd Combo</button>
+<button id="getValue3a">Set Value from 3nd Combo</button>
+<br/>
+<label>Test4 input part is read-only, user must pick from dropdown: </label>
+<div id="testDiv2"></div>
+<br/>
+<button id="getValue4">Get Value from 4nd Combo</button>
+
+<button style="margin:5px" id="getValue5">Change combo-4 options</button>
 </body>
 </html>

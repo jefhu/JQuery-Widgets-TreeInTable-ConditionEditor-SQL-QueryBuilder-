@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jQuery UI Autocomplete - Combobox</title>
+    <link href="jquery-ui-1.11.4/jquery-ui.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
+	<link rel="stylesheet" type="text/css" href="css/ise.treeintable.css">
+	<script src="jquery-ui-1.11.4/external/jquery/jquery.js"></script>
+	<script src="jquery-ui-1.11.4/jquery-ui.js"></script>
+	<!--  
+	<script type="text/javascript" src="js/jquery.ise.datastore.js"></script>
+	<script type="text/javascript" src="js/jquery.ise.treeintable.js"></script>
+	<script type="text/javascript" src="js/jquery.ise.conditioneditor.js"></script>
+	<script type="text/javascript" src="js/esprima.js"></script>
+	-->
+	<script type="text/javascript" src="js/jquery.ise.versatilecombobox.js"></script>
+	<script type="text/javascript" src="js/jquery.ise.equationeditor.js"></script>
+	<style>
+		
+	</style>
+	<script>
+	
+	$(function() {
+		var metadata=  {
+			 	"fields": [{
+			 		"label": "Name",
+			 		"value": "Name",
+			 		"type": "string"
+			 	}, {
+			 		"label": "Age",
+			 		"value": "Age",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "SSN",
+			 		"value": "SSN",
+			 		"type": "string"
+			 	}, {
+			 		"label": "sourceIP",
+			 		"value": "sourceIP",
+			 		"type": "string"
+			 	}, {
+			 		"label": "targetIP",
+			 		"value": "targetIP",
+			 		"type": "string"
+			 	}, {
+			 		"label": "amount",
+			 		"value": "amount",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "bonus",
+			 		"value": "bonus",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "registered",
+			 		"value": "registered",
+			 		"type": "boolean"
+			 	}],
+			 	"operators": [{
+			 		"label": "=",
+			 		"value": "=",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "!=",
+			 		"value": "!=",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": ">=",
+			 		"value": ">=",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "<=",
+			 		"value": "<=",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "<",
+			 		"value": "<",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": ">",
+			 		"value": ">",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "is",
+			 		"value": "is",
+			 		"type": "boolean"
+			 	}, {
+			 		"label": "isNot",
+			 		"value": "isNot",
+			 		"type": "boolean"
+			 	},  {
+			 		"label": "matches",
+			 		"value": "matches",
+			 		"type": "string"
+
+			 	},{
+			 		"label": "startsWith",
+			 		"value": "startsWith",
+			 		"type": "string"
+
+			 	}, {
+			 		"label": "endsWith",
+			 		"value": "endsWith",
+			 		"type": "string"
+			 	}, {
+			 		"label": "like",
+			 		"value": "like",
+			 		"type": "string"
+			 	}, {
+			 		"label": "contains",
+			 		"value": "contains",
+			 		"type": "string"
+			 	}, {
+			 		"label": "range",
+			 		"value": "range",
+			 		"type": "string"
+			 	}]
+			 }
+		
+		var metadataUtil ={
+				getObjectHelper : function(metaList, item, attributeName){
+					if (!attributeName){
+						attributeName = "value";
+					}
+					var metaFlds = metaList
+					for (var i =0; i<metaFlds.length;i++){
+						if (metaFlds[i][attributeName].toLowerCase() == item[attributeName].toLowerCase()){
+							return metaFlds[i];
+						}
+					}
+					return null;
+				},
+				getFieldObject : function(item, attributeName){
+					var metaFields = metadata.fields;
+					return this.getObjectHelper(metaFields, item, attributeName);
+				},
+						
+				getOperatorObject:function(item, attributeName){
+					var metaOps = metadata.operators;
+					return this.getObjectHelper(metaOps, item, attributeName);
+				},
+		
+				getOperatorsByType :function(type){
+					var ops = [];
+					var metaOps = metadata.operators;
+					for (var i =0; i<metaOps.length;i++){
+						if (metaOps[i].type.toLowerCase() == type.toLowerCase()){
+							ops.push(metaOps[i]);
+						}
+					}
+					return ops;
+				},
+				
+				getFieldsByType : function(type){
+					var fields=[];
+					var metaFlds = metadata.fields;
+					for (var i =0; i<metaFlds.length;i++){
+						if (metaFlds[i].type.toLowerCase() == type.toLowerCase()){
+							fields.push(metaFlds[i]);
+						}
+					}
+					return fields;
+				}
+		}
+		
+		
+		var fieldOptions= metadata.fields;		
+		var operatorOptions = [];//metadataUtil.getOperatorsByType("numerical");	
+		var valueOptions = []; // metadataUtil.getOperatorsByType("numerical");
+			
+		
+		$( "#combobox" ).equationeditor({
+			fieldselectOptions : fieldOptions,
+			operatorselectOptions : operatorOptions,
+			valueselectOptions : valueOptions,
+			onFormCreateComplete: function(fieldwidget, operatorwidget, valuewidget){
+				//  Overriding onFormCreateComplete() give you a chance to inject customized code to the widget.
+				console.log("customized onFormCreateComplete()");
+				/*								
+				This is a demostration. In real life application, we should use meta-data. based on selected field's data type,
+				we adjust operator combo's options and value combo's option accordingly.
+				Say, for "age" field, you make opeator to have "=, !=, >.." options. Force value field to accept numerical value only.
+				As well, for "name" field, you can have operator the have "startWith, contains, like, endWith" options. 
+			
+				*/
+				
+				//I am overriding onFieldInputChange() API.  
+				//When user changes "field" value, we can update "operator" and "value" widget according to specific business logic.
+				this.onFieldInputChange = function(widget){
+					var fieldwidget = this.getFieldWidget();
+					var operatorwidget = this.getOperatorWidget();
+					var valuewidget = this.getValueWidget();
+					if (this.debug) console.log("customized onFieldInputChange() " +JSON.stringify(widget.selectedValue));
+					
+					var fieldValue = fieldwidget.selectedValue;
+					if (!fieldValue) return;
+					
+				    // enable operator-combo and valuewidget-combo
+					operatorwidget.enable();
+					valuewidget.enable();
+					
+					var fieldObj =  metadataUtil.getFieldObject(fieldValue, "value");
+					if (fieldObj){
+						operatorwidget.reset();						
+						// if (fieldObj.type == "string") --> fill operatorwidget.selectOptions with "startsWith, endsWith..., etc"						
+						operatorwidget.selectOptions = metadataUtil.getOperatorsByType(fieldObj.type);
+						operatorwidget.selectOptions= operatorwidget.selectOptions.concat(metadataUtil.getOperatorsByType("boolean"));
+					}					
+					
+					if (fieldObj.type != "boolean"){
+						// say user picks "name" field (a string type field),  we want to populate value-combo with all string type fields except "name"
+						var typeFields =  metadataUtil.getFieldsByType(fieldObj.type);
+						var idx = typeFields.indexOf(fieldObj);
+						typeFields.splice(idx, 1);
+						valuewidget.selectOptions = typeFields;
+					}	
+					
+					///*  We can examine every select field's value and update operator-combo and value-combo accordingly.
+					if (fieldValue.value == "name"){
+						// write you business logic
+						//operatorwidget.selectOptions = ...
+						//valuewidget.selectOptions  = .. 
+					}else{
+						// write you businese logic ...
+					}
+					
+					//*/
+					operatorwidget.reset();
+					valuewidget.reset();
+				};
+				
+				/*
+				* Override the API onOperatorInputChange()
+				* When ever user picks operator value, we can update the value-combo accordingly.
+				*/
+				 this.onOperatorInputChange = function(widget){
+					var fieldwidget = this.getFieldWidget();
+					var operatorwidget = this.getOperatorWidget();
+					var valuewidget = this.getValueWidget();
+					if (this.debug) console.log("customized onOperatorInputChange() " +JSON.stringify(widget.selectedValue));
+					
+					var fieldValue = fieldwidget.selectedValue;
+					var operatorValue = operatorwidget.selectedValue;
+					var operatorObj =  metadataUtil.getOperatorObject(operatorValue, "value");
+					if (operatorObj.type == "boolean"){
+						var nullFields =['null', 'not-null'];
+						valuewidget.selectOptions = nullFields;
+					}	
+						
+					valuewidget.reset();
+				}; 
+				
+				/*
+				* Override the API onValueInputChange()
+				* When ever user picks operator value, we can update the value-combo accordingly.
+				*/
+				this.onValueInputChange  = function(widget){
+					if (this.debug) console.log("customized onValueInputChange() " +JSON.stringify(widget.selectedValue));
+				};
+				
+				
+			},
+			debug:true
+		});
+		
+		
+	
+	});
+	</script>
+</head>
+<body>
+<hr><b>This demonstrates equationeditor Widget. <br/> <br/>This widget let you specify equation. <br/> In application, you can control fields, operator and value</b> </hr>
+<br/>
+<br/>
+
+
+<div class="ui-widget">
+	<label>Equation Editor </label>
+	<br/>
+	<div id="combobox">
+		
+	</div>
+</div>
+
+</body>
+</html>

@@ -736,6 +736,9 @@
 			var formNode = $(formString);
 			return formNode;
 		},
+		
+		
+		
 
 		buildBooleanOpeartorEditForm:function(){
 			// summary:
