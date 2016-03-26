@@ -27,7 +27,7 @@
 		valueselectOptions:[],
 		valueselectedValue:null,
 		valuedefaultValue:null,
-		boolvalueMustSelect:true,
+		boolvalueMustSelect:false,
 		boolvalueInputReadOnly:false,
 		
 		_create: function() {
@@ -61,13 +61,7 @@
 			this.addWidgetsToForm();
 			var fieldwidget = this.getFieldWidget();
 			var operatorwidget = this.getOperatorWidget();
-			var valuewidget = this.getValueWidget();
-			
-			//disable operatorwidget and valuewidget
-			operatorwidget.disable();
-			valuewidget.disable();
-			//operatorwidget.option("disabled", true);
-			//valuewidget.option("disabled", true);
+			var valuewidget = this.getValueWidget();	
 			
 			this.onFormCreateComplete(fieldwidget, operatorwidget, valuewidget);
 		},
@@ -156,29 +150,7 @@
 			return fieldwidget;
 		},
 		
-		/*createOperatorInput:function(){
-			this.operatorInput = $( "<div>" )
-			.appendTo( this.wrapper )
-			.versatilecombobox({
-				"boolMustSelect":false,
-				"defaultValue":"React JS",
-				"selectOptions": [
-				              	{
-				            		"label": "ReactJS",
-				            		"value": "React JS"
-				            	},
-				            	{
-				            		"label": "AngularJS",
-				            		"value": "Angular JS"
-				            	},
-				            	{
-				            		"label": "KnockoutJS",
-				            		"value": "KNockoud JS"
-				            	}
-
-				            ]
-			});
-		},*/
+		
 		
 		createFieldInput:function(){
 			var self =this;

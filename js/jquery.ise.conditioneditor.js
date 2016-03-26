@@ -7,7 +7,7 @@
  */
 
 /**
- jquery.ise.conditioneditor widget extends from jquery.ise.datastore.js.  It makes manipulating a boolean expression very simple and easy. 
+ jquery.ise.conditioneditor widget extends from jquery.ise.treeintable.js.  It makes manipulating a boolean expression very simple and easy. 
  Say, you have searching criteria looks like "(priority == "5")||((souceIp == "1.2.2.3")&&(device == "router"))". 
  ConditionEditor will organize it in a hierarchical tree like 
 		▼|| 
@@ -42,8 +42,87 @@
 
 	$.widget("ise.conditioneditor", $.ise.treeintable, {
 
+		metadata: null,
+		
+		_create: function() {
+			if(this.options.metadata){
+				this.metadata = this.options.metadata;		
+				console.log(this.metadata);
+			}
+			
+			if(this.options.metadataUtil){
+				this.metadataUtil = this.options.metadataUtil;
+			}
+			
+			if(this.options.onEquationEditoronFormCreateComplete){
+				this.onEquationEditoronFormCreateComplete = this.options.onEquationEditoronFormCreateComplete;
+			}
+			
+			
+			if(this.options.getMathExpressFromEquationDataItem){
+				this.getMathExpressFromEquationDataItem = this.options.getMathExpressFromEquationDataItem;
+			}
+			
+			if(this.options.getValueFromEquationEditor){
+				this.getValueFromEquationEditor = this.options.getValueFromEquationEditor;
+			}
+			
+			if(this.options.checkConditionValidity){
+				this.checkConditionValidity = this.options.checkConditionValidity;
+			}	
+			
+						
+			// call parent widget's _create() 
+			this._super();
+		},
+		
+		metadataUtil : {
+				getObjectHelper : function(metaList, item, attributeName){
+					if (!attributeName){
+						attributeName = "value";
+					}
+					var metaFlds = metaList
+					for (var i =0; i<metaFlds.length;i++){
+						if (metaFlds[i][attributeName].toLowerCase() == item[attributeName].toLowerCase()){
+							return metaFlds[i];
+						}
+					}
+					return null;
+				},
+				getFieldObject : function(item, attributeName){
+					var metaFields = metadata.fields;
+					return this.getObjectHelper(metaFields, item, attributeName);
+				},
+						
+				getOperatorObject:function(item, attributeName){
+					var metaOps = metadata.operators;
+					return this.getObjectHelper(metaOps, item, attributeName);
+				},
+		
+				getOperatorsByType :function(type){
+					var ops = [];
+					var metaOps = metadata.operators;
+					for (var i =0; i<metaOps.length;i++){
+						if (metaOps[i].type.toLowerCase() == type.toLowerCase()){
+							ops.push(metaOps[i]);
+						}
+					}
+					return ops;
+				},
+				
+				getFieldsByType : function(type){
+					var fields=[];
+					var metaFlds = metadata.fields;
+					for (var i =0; i<metaFlds.length;i++){
+						if (metaFlds[i].type.toLowerCase() == type.toLowerCase()){
+							fields.push(metaFlds[i]);
+						}
+					}
+					return fields;
+				}
+		},
 
-
+		
 
 		processStoreItemsBeforeBuildTable:function(storeItems){
 			// summary:
@@ -155,6 +234,8 @@
 		 *  type=5 (AssignmentExpression) --> name =9
 		 * {"type":"AssignmentExpression", "operator":"=", "left":{"type":"Identifier", "name":"name"}, "right":{"type":"Literal", "value":9, "raw":"9"}}
 		 *		
+		 *  type=6 ( CallExpression) --> matches(name, ok)	
+		 *  {"type":"CallExpression","callee":{"type":"Identifier","name":"matches"},"arguments":[{"type":"Identifier","name":"name"},{"type":"Identifier","name":"ok"}]}
 		 */		
 		processStoreItemsBeforeBuildTableHelper:function(currentItem, treepathArray){
 			var isOKToInclude = true;
@@ -172,22 +253,13 @@
 					var opLeft = currentItem.dataItem.expression.left
 					var	opRight = currentItem.dataItem.expression.right;
 					var operator = currentItem.dataItem.expression.operator;
-					currentItem.dataItem['expression']= opLeft.name + " " + operator + " \"" + ((opRight.value!=undefined)? opRight.value: opRight.name) + "\"";
+					var leftValue = opLeft.name;
+					var rightValue = ((opRight.value!=undefined)? opRight.value: opRight.name) ;
+					currentItem.dataItem['expression']= leftValue + " " + operator + " \"" + rightValue+ "\"";
+					this._makeEquationObject(currentItem, leftValue, operator, rightValue);
 				}else if  (currentItem.dataItem.expression.type == "CallExpression"){
-					console.log("CallExpression");
-					var operator = currentItem.dataItem.expression.callee.name;
-					var optLeft = "";
-					var argumentsList = currentItem.dataItem.expression.arguments;
-					var optRight ="";
-					for (var i=0; i<argumentsList.length; i++){
-						var temp = (argumentsList[i].name != undefined)? argumentsList[i].name: argumentsList[i].value;
-						if (i==0){
-							optRight = temp;
-						}else{
-							optRight = optRight + "," + temp;
-						}
-					}
-					currentItem.dataItem['expression']= optLeft + " " + operator + " \"" + optRight + "\"";
+					console.log("CallExpression");				
+					currentItem.dataItem['expression']=this.callExpressionHandler(currentItem, currentItem.dataItem.expression);
 				}
 
 			}else if  (currentItem.dataItem.type == "BinaryExpression"){
@@ -197,27 +269,46 @@
 				var operator = currentItem.dataItem.operator;
 				if (opLeft.type && opLeft.type == "Identifier"){
 					//type-3 - a
-					currentItem.dataItem['expression']= opLeft.name + " " + operator + " \"" + ((opRight.value!=undefined)? opRight.value: opRight.name)+ "\"";			     
+					var leftValue = opLeft.name;
+					var rightValue = ((opRight.value!=undefined)? opRight.value: opRight.name) ;
+					currentItem.dataItem['expression']=leftValue + " " + operator + " \"" +rightValue + "\"";		
+					this._makeEquationObject(currentItem, leftValue, operator, rightValue);
 				}else if (opLeft.type && opLeft.type == "CallExpression"){		
-					//type-3 b
-					var funName = opLeft.callee.name;
-					var argumentsList = opLeft.arguments;
-					var parameters = "";
-					for (var i=0; i<argumentsList.length; i++){
-						var temp = (argumentsList[i].name != undefined)? argumentsList[i].name: argumentsList[i].value;
-						if (i==0){
-							parameters = temp;
-						}else{
-							parameters = parameters + "," + temp;
-						}
-					}
-					var leftSide = funName + "(" + parameters + ")";
-					currentItem.dataItem['expression']= leftSide + " " + operator + " \"" + ((opRight.value!=undefined)? opRight.value: opRight.name)+ "\"";	
-				}
-				else{
+					//type-3 b					
+					///*
+					var functionExpress = this.callExpressionHandler(currentItem, opLeft);
+					var leftValue = functionExpress;
+					var rightValue = ((opRight.value!=undefined)? opRight.value: opRight.name);
+					currentItem.dataItem['expression']= functionExpress + " " + operator + " \"" + rightValue+ "\"";
+					this._makeEquationObject(currentItem, leftValue, operator, rightValue);
+					//*/
+				}else if (opRight.type && opRight.type == "CallExpression"){	
+					//  We can parse expression like  --> 10>matches("Priority", "4").  But it will mess populating data to equation-editor. So don't support this option
+					///*
+					var functionExpress = this.callExpressionHandler(currentItem, opRight);
+					var leftValue = opLeft.value;
+					var rightValue = functionExpress;
+					currentItem.dataItem['expression']= leftValue + " " + operator + " " + functionExpress;	
+					this._makeEquationObject(currentItem, leftValue, operator, rightValue);
+					//*/
+				}else{
 					isOKToInclude = false;
 				}
-			}else{
+			}else if(currentItem.dataItem.type == "CallExpression"){
+				var len =treepathArray.length;
+				var lastTreepathArrayItem = null;
+				if (len > 0){
+					lastTreepathArrayItem = treepathArray[len-1];
+				}
+				var functionExpress = this.callExpressionHandler(currentItem, currentItem.dataItem);
+				if (lastTreepathArrayItem 
+						&& lastTreepathArrayItem.dataItem.expression.indexOf(functionExpress)<0
+						&& lastTreepathArrayItem.dataItem.type != "ExpressionStatement"){
+					//var functionExpress = this.callExpressionHandler(currentItem, currentItem.dataItem);
+					currentItem.dataItem['expression']= functionExpress;
+				}
+			}
+			else{
 				isOKToInclude = false;
 			}
 
@@ -226,6 +317,34 @@
 				treepathArray.push(currentItem);
 			}
 		}, 
+		
+		_makeEquationObject(currentItem, leftValue, operator, rightValue){
+			currentItem.dataItem['equationobject']={
+					left: leftValue,
+					operator:operator,
+					right:rightValue
+			}
+		},
+		
+		callExpressionHandler : function (currentItem, itemBeingProcess){
+			var funName = itemBeingProcess.callee.name;
+			var argumentsList = itemBeingProcess.arguments;
+			var parameters = "";
+			var leftValue =null;
+			for (var i=0; i<argumentsList.length; i++){
+				var temp = (argumentsList[i].name != undefined)? argumentsList[i].name: argumentsList[i].value;
+				if (i==0){
+					leftValue =temp;
+					parameters = temp;
+				}else{
+					parameters = parameters + "," + temp;
+				}
+			}
+			var leftSide = funName + "(" + parameters + ")";
+			this._makeEquationObject(currentItem, leftValue, funName, parameters);
+			return leftSide;
+			
+		},
 
 		isParentItem :function(dataItem){
 			//summary:
@@ -267,6 +386,9 @@
 
 		getMathExpression:function(){
 			var roots = this.getRootLevelRowItems();
+			if (this.getAllRowNodes().length==1){
+				roots.push(this.getAllRowNodes()[0]);
+			}					
 			var stringBuffer ="";
 			if (roots !=0 && roots[0] ){
 				stringBuffer = this.getMathExpressionLooper(  roots[0], stringBuffer);
@@ -305,9 +427,13 @@
 					mathExpression = mathExpression + "(" + buf + ")";
 				}	    		
 			}else{	    		
-				mathExpression = dataItem.expression;
+				mathExpression = this.getMathExpressFromEquationDataItem(dataItem);//dataItem.expression;
 			}
 			return mathExpression;
+		},
+		
+		getMathExpressFromEquationDataItem:function(dateItem){
+			return  dataItem.expression;
 		},
 
 		buildThNodeContent:function(headers, i){
@@ -656,13 +782,16 @@
 			var contentNode = $(this.dialog);
 			if (!this.selectedRow) return;
 			var formNode = null;
+			contentNode.empty();
 			if (this.isParentItem(this.selectedRow.treetableArrayItem.dataItem)){
 				formNode = this.buildBooleanOpeartorEditForm();
+				contentNode.append(formNode);
 			}else{
 				formNode = this.buildConditionEditForm();
+				formNode.appendTo(contentNode);
 			}
-			contentNode.empty();
-			contentNode.append(formNode);
+			
+			
 			this.populateConditionEditorValue();
 		},
 
@@ -707,12 +836,33 @@
 			var leftValue = (opLeft && opLeft.name)?opLeft.name: "";
 			var opValue = (operator)? operator: "";
 			var rightValue = (opRight && opRight.value)? opRight.value: "";
-			$( contentNode.find("input")[0]).val(leftValue);
+			
+			if (currentItem.dataItem.type=="ExpressionStatement"
+				|| currentItem.dataItem.type=="CallExpression"){
+				var obj = esprima.parse(currentItem.dataItem.expression);
+				opValue = obj.body[0].expression.callee.name;
+				var argList = obj.body[0].expression.arguments;
+				leftValue = argList[0].name;
+				for (var i=1; i<argList.length; i++){
+					if(i==1){
+						rightValue = (argList[i].value)?argList[i].value:argList[i].name;
+					}else{
+						rightValue = rightValue + "," + (argList[i].value)?argList[i].value:argList[i].name;
+					}
+				}
+			}
+			
+			var equationeditorWidget = this.equationeditor.data("iseEquationeditor");
+			equationeditorWidget.getFieldWidget().setValue(leftValue);
+			equationeditorWidget.getOperatorWidget().setValue(opValue);
+			equationeditorWidget.getValueWidget().setValue(rightValue);
+			
+			/*$( contentNode.find("input")[0]).val(leftValue);
 			$( contentNode.find("input")[1]).val(opValue);
-			$( contentNode.find("input")[2]).val(rightValue);
+			$( contentNode.find("input")[2]).val(rightValue);*/
 		},
 
-		buildConditionEditForm:function(){
+		buildConditionEditForm_OLD:function(){
 			// summary:
 			// Build a simple form for use to edit a ConditionEditor tree node.
 			// Application should override this API to meet application specific requirement.
@@ -737,7 +887,53 @@
 			return formNode;
 		},
 		
+		buildConditionEditForm:function(){
+			///*
+			if (this.equationeditor ){
+				//return this.equationeditor ;
+				this.equationeditor.remove();
+			}
+			//*/
+			
+			var fieldOptions= this.getEquationEditorFieldOptions();		
+			var operatorOptions = this.getEquationEditorOperatorOptions();
+			var valueOptions = this.getEquationEditorValueOptions();
+			
+			var self = this;
+			
+			this.equationeditor = $("<div>").equationeditor({				
+				fieldselectOptions : fieldOptions,
+				operatorselectOptions : operatorOptions,
+				valueselectOptions : valueOptions,
+				onFormCreateComplete: function(fieldwidget, operatorwidget, valuewidget){
+					//  Overriding onFormCreateComplete() give you a chance to inject customized code to the widget.
+					console.log("customized onFormCreateComplete()");
+					self.onEquationEditoronFormCreateComplete(self, this, fieldwidget, operatorwidget, valuewidget); //<- "this" is the equationeditor
+					
+				}
+			});// equationeditor
+			
+			return this.equationeditor;
+			
+		},
 		
+		onEquationEditoronFormCreateComplete:function(conditioneditor, equationeditor, fieldwidget, operatorwidget, valuewidget){
+			if (this.debug) console.log("conditionEditor -> equationeditor.onFormCreateComplete()");
+		},
+		
+		
+		
+		getEquationEditorFieldOptions : function(){
+			return this.metadata.fields;	
+		}, 
+		
+		getEquationEditorOperatorOptions : function(){
+			return this.metadata.operators;	
+		}, 
+		
+		getEquationEditorValueOptions : function(){
+			return [];	
+		}, 
 		
 
 		buildBooleanOpeartorEditForm:function(){
@@ -802,9 +998,9 @@
 			var contentNode = $(this.dialog);
 			var currentItem = this.selectedRow.treetableArrayItem;
 
-			var inputFieldName =  $( contentNode.find("input")[0]).val();
-			var inputOperator = $( contentNode.find("input")[1]).val();
-			var inputValue = $( contentNode.find("input")[2]).val();
+			var inputFieldName =this.getValueFromEquationEditor("field") ;// $( contentNode.find("input")[0]).val();
+			var inputOperator  =this.getValueFromEquationEditor("operator") ;//$( contentNode.find("input")[1]).val();
+			var inputValue     =this.getValueFromEquationEditor("value") ;// $( contentNode.find("input")[2]).val();
 
 			if (! currentItem.dataItem.left) currentItem.dataItem.left={};
 			currentItem.dataItem.left.name =inputFieldName
@@ -817,6 +1013,19 @@
 			$(this.selectedRow).find("td")[0].textNode.nodeValue=expressionString;
 
 		},
+		
+		getValueFromEquationEditor(type){
+			var contentNode = $(this.dialog);
+			var currentItem = this.selectedRow.treetableArrayItem;
+            if (type=="field"){
+            	return $( contentNode.find("input")[0]).val();
+            }else if (type=="operator"){
+            	return $( contentNode.find("input")[1]).val();
+            }else if (type=="value"){
+            	return $( contentNode.find("input")[2]).val();
+            }
+			return null;
+		}, 
 
 		invokeConditionEditor:function(){
 			// summary:
@@ -1038,10 +1247,10 @@
 			return null;
 		}, 
 
+		
 
 
 
-
-		debug:true
+		debug:false
 	});  // end widget
 })(jQuery);

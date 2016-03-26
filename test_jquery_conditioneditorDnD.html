@@ -16,12 +16,17 @@
 				width: 365px;
 			}
 			
+			/*This is the trick to make autocomplete menu popup properly in the dialog */
+			ul.ui-front {
+			    z-index: 1100;
+			}
+						
 			
 		</style>
 </head>
 	<body>
 	    <div id="datastore3" class="datastore"></div>
-    	<div id="treeintable3" class="treeintable">Condition Editor (Drag and Drop) </div> 
+    	<div id="treeintable3" class="treeintable">Condition Editor (Drag-and-Drop, Meta-Data driven) </div> 
     	<br/>
     	<p>
     	Write you search criteria below and click "Parse Expression To Condition Tree" button.
@@ -37,8 +42,8 @@
         <p>
         	This widget enables user to configure data search criteria. <br> 
         	User can write down search criteria and let the widget parse the string expression to Condition-Editor-Tree.<br>
-        	User then use drag and drop to arrange condition. <br>
-        	Service provider control which fields are exposed to user.        	
+        	It supports drag and drop to arrange conditions. <br>
+        	Validation and configuration are driven by meta-data. Service provider controls which fields/functions are accessible to users.        	
         </p>
       
 		
@@ -49,7 +54,112 @@
         <script type="text/javascript" src="js/jquery.ise.treeintable.js"></script>
         <script type="text/javascript" src="js/jquery.ise.conditioneditor.js"></script>
         <script type="text/javascript" src="js/esprima.js"></script>
+        <script type="text/javascript" src="js/jquery.ise.versatilecombobox.js"></script>
+		<script type="text/javascript" src="js/jquery.ise.equationeditor.js"></script>
+		
        <script>
+       var metadata=  {
+			 	"fields": [{
+			 		"label": "Name",
+			 		"value": "Name",
+			 		"type": "string"
+			 	}, {
+			 		"label": "Age",
+			 		"value": "Age",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "SSN",
+			 		"value": "SSN",
+			 		"type": "string"
+			 	}, {
+			 		"label": "sourceIp",
+			 		"value": "sourceIp",
+			 		"type": "string"
+			 	}, {
+			 		"label": "targetIp",
+			 		"value": "targetIp",
+			 		"type": "string"
+			 	}, {
+			 		"label": "amount",
+			 		"value": "amount",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "bonus",
+			 		"value": "bonus",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "registered",
+			 		"value": "registered",
+			 		"type": "boolean"
+			 	}, {
+			 		"label": "priority",
+			 		"value": "priority",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "device",
+			 		"value": "device",
+			 		"type": "string"
+			 	}],
+			 	"operators": [{
+			 		"label": "=",
+			 		"value": "=",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "!=",
+			 		"value": "!=",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": ">=",
+			 		"value": ">=",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "<=",
+			 		"value": "<=",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "<",
+			 		"value": "<",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": ">",
+			 		"value": ">",
+			 		"type": "numerical"
+			 	}, {
+			 		"label": "is",
+			 		"value": "is",
+			 		"type": "boolean"
+			 	}, {
+			 		"label": "isNot",
+			 		"value": "isNot",
+			 		"type": "boolean"
+			 	},  {
+			 		"label": "matches",
+			 		"value": "matches",
+			 		"type": "string"
+
+			 	},{
+			 		"label": "startsWith",
+			 		"value": "startsWith",
+			 		"type": "string"
+
+			 	}, {
+			 		"label": "endsWith",
+			 		"value": "endsWith",
+			 		"type": "string"
+			 	}, {
+			 		"label": "like",
+			 		"value": "like",
+			 		"type": "string"
+			 	}, {
+			 		"label": "contains",
+			 		"value": "contains",
+			 		"type": "string"
+			 	}, {
+			 		"label": "range",
+			 		"value": "range",
+			 		"type": "string"
+			 	}]
+			 }
        var treeintableWidget3= null;
        var storeWidget3= null;
        
@@ -93,7 +203,182 @@
 		var loadConditionEditor = function( event, data ) {
             console.log( "datastore build complete" );
             //instantiate "treeintable" object.
-            var treeinTableNode =$("#treeintable3").conditioneditor({ store: store3});
+            var treeinTableNode =$("#treeintable3").conditioneditor({
+            	store: store3,
+            	metadata: metadata,
+            	checkConditionValidity : function(trNode){
+            	// override checkConditionValidity(). developer can customize data validation logic
+            	// For example, (sourceIp1=="10.1.2.t")||matches(Name, ok) --> sourceIp1 is not in medatdata, 10.1.2.t is not a valid IP address
+        			var equationobject = trNode.treetableArrayItem.dataItem.equationobject;
+        			var isFieldInMetaData =false;
+        			var fields = metadata.fields;        			
+        			for (var i=0; i< fields.length; i++){
+        				if (equationobject.left  == fields[i].value){
+        					isFieldInMetaData = true;
+        					break;
+        				}
+        			}
+        			var obj ={};	
+        			
+        			if (!isFieldInMetaData){	     
+        				var msg ="[" +equationobject.left + "] is not known.  It is not in the metadata list";	   
+	    				obj.message = (obj.message) ? obj.message + " " + msg  : msg;
+        			}
+        			
+        			// validate if the operator is valid
+        			// For example: matchesXXX(Name, ok)  --> "matchesXXX" is not a supported function
+        			var isOperatorValid =false;
+        			var ops = metadata.operators;        			
+        			for (var i=0; i< ops.length; i++){
+        				if (equationobject.operator  == ops[i].value){
+        					isOperatorValid=true;
+        					break;
+        				}
+        			}
+        			if (!isOperatorValid){	          				
+	    				var msg = "[" + equationobject.operator + "] is not a supported function.  It is not in the metadata list";	  
+	    				obj.message = (obj.message) ? obj.message + " " + msg  : msg;
+        				
+        			}
+        			
+        			
+        			var isValueVadid =true;
+        			// you can right code to check equationobject.right is correct 
+        			//For example (sourceIp1=="10.1.2.t") 10.1.2.t is not a valid IP address
+        			if ( equationobject.left=="sourceIp" ||  equationobject.left=="targetIp"){
+	        			var ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;  
+	        			isValueVadid= ipformat.test(equationobject.right );
+	 					if (!isValueVadid){
+	 						var msg ="[" +equationobject.right + "] is not a valid IP address";   
+		    				obj.message = (obj.message) ? obj.message + " " + msg  : msg;
+	 					}
+            		}
+            		if (isValueVadid && isFieldInMetaData && isOperatorValid){
+        			  return null;
+            		}else{
+            			obj.row = trNode;
+            			return obj;
+            		}
+        		}, 
+            	getValueFromEquationEditor(type){  
+        		// override getValueFromEquationEditor(), this api controls what value to populate to equation-editor (where user configurs something like "a>b")
+            		var equationeditorWidget = this.equationeditor.data("iseEquationeditor");  
+                    if (type=="field"){
+                    	return equationeditorWidget.getFieldWidget().selectedValue.value;
+                    }else if (type=="operator"){
+                    	return equationeditorWidget.getOperatorWidget().selectedValue.value;
+                    }else if (type=="value"){
+                    	return equationeditorWidget.getValueWidget().selectedValue.value;
+                    }
+        			return null;
+        		}, 
+            	getMathExpressFromEquationDataItem : function(dataItem){
+            	// override getMathExpressFromEquationDataItem().  Develper can control how to generate math-expression
+            		var opLeft = dataItem.left
+        			var opRight = dataItem.right;
+        			var operator = dataItem.operator;
+        			var conditioneditor = this;
+        			var opType =null;
+        			var ops = metadata.operators;        			
+        			for (var i=0; i< ops.length; i++){
+        				if (operator  == ops[i].value){
+        					opType = ops[i].type;
+        					break;
+        				}
+        			}
+        			if (opType && opType !="numerical"){
+        				return  operator + "( " + opLeft.name + " ," + opRight.value + ")" ;
+        			}
+        			return  dataItem.expression;
+            	},
+            	onEquationEditoronFormCreateComplete:function(conditioneditor, equationeditor, fieldwidget, operatorwidget, valuewidget){
+            		if (this.debug) console.log(" test file conditionEditor -> onEquationEditoronFormCreateComplete()");
+            		
+            		//operatorwidget.enable();
+					//valuewidget.enable();
+					
+            		//I am overriding onFieldInputChange() API.  
+    				//When user changes "field" value, we can update "operator" and "value" widget according to specific business logic.
+    				equationeditor.onFieldInputChange = function(widget){
+    					var fieldwidget = equationeditor.getFieldWidget();
+    					var operatorwidget = equationeditor.getOperatorWidget();
+    					var valuewidget = equationeditor.getValueWidget();
+    					if (this.debug) console.log("customized onFieldInputChange() " +JSON.stringify(widget.selectedValue));
+    					
+    					var fieldValue = fieldwidget.selectedValue;
+    					if (!fieldValue) return;
+    					
+    				    // enable operator-combo and valuewidget-combo
+    					
+    					
+    					var fieldObj =  conditioneditor.metadataUtil.getFieldObject(fieldValue, "value");
+    					if (fieldObj){
+    						operatorwidget.reset();						
+    						// if (fieldObj.type == "string") --> fill operatorwidget.selectOptions with "startsWith, endsWith..., etc"						
+    						operatorwidget.selectOptions =  conditioneditor.metadataUtil.getOperatorsByType(fieldObj.type);
+    						operatorwidget.selectOptions= operatorwidget.selectOptions.concat( conditioneditor.metadataUtil.getOperatorsByType("boolean"));
+    					}					
+    					
+    					if (fieldObj.type != "boolean"){
+    						// say user picks "name" field (a string type field),  we want to populate value-combo with all string type fields except "name"
+    						var typeFields =   conditioneditor.metadataUtil.getFieldsByType(fieldObj.type);
+    						var idx = typeFields.indexOf(fieldObj);
+    						typeFields.splice(idx, 1);
+    						valuewidget.selectOptions = typeFields;
+    					}	
+    					
+    					///*  We can examine every select field's value and update operator-combo and value-combo accordingly.
+    					if (fieldValue.value == "name"){
+    						// write you business logic
+    						//operatorwidget.selectOptions = ...
+    						//valuewidget.selectOptions  = .. 
+    					}else{
+    						// write you businese logic ...
+    					}
+    					
+    					//*/
+    					operatorwidget.reset();
+    					valuewidget.reset();
+    				};
+    				
+    				/*
+    				* Override the API onOperatorInputChange()
+    				* When ever user picks operator value, we can update the value-combo accordingly.
+    				*/
+    				equationeditor.onOperatorInputChange = function(widget){
+    					var fieldwidget = equationeditor.getFieldWidget();
+    					var operatorwidget = equationeditor.getOperatorWidget();
+    					var valuewidget = equationeditor.getValueWidget();
+    					if (conditioneditor.debug) console.log("customized onOperatorInputChange() " +JSON.stringify(widget.selectedValue));
+    					
+    					var fieldValue = fieldwidget.selectedValue;
+    					var operatorValue = operatorwidget.selectedValue;
+    					var operatorObj =   conditioneditor.metadataUtil.getOperatorObject(operatorValue, "value");
+    					if (operatorObj.type == "boolean"){
+    						var nullFields =[{
+				    		            		"label": "null",
+				    		            		"value": "null"
+				    		            	},
+				    		            	{
+				    		            		"label": "non null",
+				    		            		"value": "non null"
+				    		            	}];
+    						valuewidget.selectOptions = nullFields;
+    					}	
+    						
+    					valuewidget.reset();
+    				}; 
+    				
+    				/*
+    				* Override the API onValueInputChange()
+    				* When ever user picks operator value, we can update the value-combo accordingly.
+    				*/
+    				equationeditor.onValueInputChange  = function(widget){
+    					if (equationeditor.debug) console.log("customized onValueInputChange() " +JSON.stringify(widget.selectedValue));
+    				};
+        		},
+            	debug : true
+            });
             storeWidget3= treeinTableNode.data("iseConditioneditor").store;  //"treeintable" old code
             treeintableWidget3=treeinTableNode.data("iseConditioneditor");
             treeintableWidget3.decorateTablerow=function(cpmTableRow){

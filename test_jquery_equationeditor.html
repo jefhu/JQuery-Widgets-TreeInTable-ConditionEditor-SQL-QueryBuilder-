@@ -176,6 +176,11 @@
 			onFormCreateComplete: function(fieldwidget, operatorwidget, valuewidget){
 				//  Overriding onFormCreateComplete() give you a chance to inject customized code to the widget.
 				console.log("customized onFormCreateComplete()");
+				
+				//Disable the operatorWidget and valueWidget first.  It forces user to pick from field-combo.
+				operatorwidget.disable();
+				valuewidget.disable();
+				var equationeditor = this;
 				/*								
 				This is a demostration. In real life application, we should use meta-data. based on selected field's data type,
 				we adjust operator combo's options and value combo's option accordingly.
@@ -186,10 +191,10 @@
 				
 				//I am overriding onFieldInputChange() API.  
 				//When user changes "field" value, we can update "operator" and "value" widget according to specific business logic.
-				this.onFieldInputChange = function(widget){
-					var fieldwidget = this.getFieldWidget();
-					var operatorwidget = this.getOperatorWidget();
-					var valuewidget = this.getValueWidget();
+				equationeditor.onFieldInputChange = function(widget){
+					var fieldwidget = equationeditor.getFieldWidget();
+					var operatorwidget = equationeditor.getOperatorWidget();
+					var valuewidget = equationeditor.getValueWidget();
 					if (this.debug) console.log("customized onFieldInputChange() " +JSON.stringify(widget.selectedValue));
 					
 					var fieldValue = fieldwidget.selectedValue;
@@ -233,17 +238,24 @@
 				* Override the API onOperatorInputChange()
 				* When ever user picks operator value, we can update the value-combo accordingly.
 				*/
-				 this.onOperatorInputChange = function(widget){
-					var fieldwidget = this.getFieldWidget();
-					var operatorwidget = this.getOperatorWidget();
-					var valuewidget = this.getValueWidget();
+				equationeditor.onOperatorInputChange = function(widget){
+					var fieldwidget = equationeditor.getFieldWidget();
+					var operatorwidget = equationeditor.getOperatorWidget();
+					var valuewidget = equationeditor.getValueWidget();
 					if (this.debug) console.log("customized onOperatorInputChange() " +JSON.stringify(widget.selectedValue));
 					
 					var fieldValue = fieldwidget.selectedValue;
 					var operatorValue = operatorwidget.selectedValue;
 					var operatorObj =  metadataUtil.getOperatorObject(operatorValue, "value");
 					if (operatorObj.type == "boolean"){
-						var nullFields =['null', 'not-null'];
+						var nullFields =[{
+		            		"label": "null",
+		            		"value": "null"
+		            	},
+		            	{
+		            		"label": "non null",
+		            		"value": "non null"
+		            	}];
 						valuewidget.selectOptions = nullFields;
 					}	
 						
@@ -254,8 +266,8 @@
 				* Override the API onValueInputChange()
 				* When ever user picks operator value, we can update the value-combo accordingly.
 				*/
-				this.onValueInputChange  = function(widget){
-					if (this.debug) console.log("customized onValueInputChange() " +JSON.stringify(widget.selectedValue));
+				equationeditor.onValueInputChange  = function(widget){
+					if (equationeditor.debug) console.log("customized onValueInputChange() " +JSON.stringify(widget.selectedValue));
 				};
 				
 				
