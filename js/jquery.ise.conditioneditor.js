@@ -1009,7 +1009,8 @@
 			currentItem.dataItem.operator = inputOperator;
 
 			var expressionString =  inputFieldName + " " + inputOperator + " \"" + inputValue + "\"";
-			currentItem.dataItem['expression']=expressionString
+			currentItem.dataItem['expression']=expressionString;
+			this._makeEquationObject(currentItem, inputFieldName, inputOperator, inputValue);
 			$(this.selectedRow).find("td")[0].textNode.nodeValue=expressionString;
 
 		},
