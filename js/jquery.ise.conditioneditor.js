@@ -162,6 +162,11 @@
 
 			return treepathArray; //storeItems;		
 		},
+		
+		buildTreeTable:function(){
+			this._super();
+			this.validate();
+		},
 
 
 		prepareMessages:function(){

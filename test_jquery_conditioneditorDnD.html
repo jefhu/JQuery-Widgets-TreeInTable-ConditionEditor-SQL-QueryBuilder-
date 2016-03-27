@@ -196,7 +196,7 @@
 		 		        }
 		 		    });
 		    	 }catch (e){
-		    		 alert(e);
+		    		 alert("Failed to parse " + mathString + "\n" + e);
 		    	 }
 		    });
 		    
@@ -259,8 +259,9 @@
         			//For example (sourceIp1=="10.1.2.t") 10.1.2.t is not a valid IP address
         			if ( equationobject.left=="sourceIp" ||  equationobject.left=="targetIp"){
         				var ipformat = /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/;
-	        			var ipformat2 = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;  
-	        			isValueVadid= ipformat.test(equationobject.right ) && ipformat2.test(equationobject.right );
+	        			var ipformat2 = /^(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;  
+	        			var ipformat3 = /^(([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
+	        			isValueVadid= ipformat.test(equationobject.right ) && ipformat2.test(equationobject.right )&& ipformat3.test(equationobject.right );
 	 					if (!isValueVadid){
 	 						var msg ="[" +equationobject.right + "] is not a valid IP address";   
 		    				obj.message = (obj.message) ? obj.message + " " + msg  : msg;
