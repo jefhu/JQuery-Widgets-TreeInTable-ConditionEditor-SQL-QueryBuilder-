@@ -67,8 +67,8 @@
 				this.getValueFromEquationEditor = this.options.getValueFromEquationEditor;
 			}
 			
-			if(this.options.checkConditionValidity){
-				this.checkConditionValidity = this.options.checkConditionValidity;
+			if(this.options.checkEquationeditorValidity){
+				this.checkEquationeditorValidity = this.options.checkEquationeditorValidity;
 			}	
 			
 						
@@ -1036,9 +1036,9 @@
 			if (!this.dialog){
 				this.instantiateDialog();	
 			}
-
-			this.dialog.dialog("open");
 			this.setDialogContent();
+			this.dialog.dialog("open");
+			
 		},
 
 		getConditionEditorDialogHeigh:function(){
@@ -1056,36 +1056,68 @@
 		instantiateDialog:function(){
 			// summary:
 			// Intantiate a dialog.
-
-			this.dialog =$( "<div class='conditionEditorDialog'></div>" )
+			
+			var conditionEditor = this;
+			this.dialog =$( "<div class='conditionEditorDialogNode'></div>" )
 			.appendTo( "body" ).dialog({
 				autoOpen: false,
-				dialogClass: "no-close", 
+				dialogClass: "equationditorDialog", 
 				height: this.getConditionEditorDialogHeigh(),
 				width: this.getConditionEditorDialogWidth(),
-				modal: true,	 		      
+				modal: true,	
 				title:this.getConditionEditorDialogTitle(),
 				buttons: {
 					OK: function() {
 						//retrieve the conditionEditor and call its updateConditon() api
-						$(this).data("uiDialog").conditionEditor.updateCondition();
-						$(this).data("uiDialog").close();
+						var inputFieldName =conditionEditor.getValueFromEquationEditor("field") ;
+						var inputOperator  =conditionEditor.getValueFromEquationEditor("operator") ;
+						var inputValue     =conditionEditor.getValueFromEquationEditor("value") ;
+
+						var equationobject ={};
+						equationobject.left=inputFieldName;
+						equationobject.operator = inputOperator;
+						equationobject.right= inputValue;
+						
+						var obj = conditionEditor.checkEquationeditorValidity(equationobject);
+						if (obj){
+							conditionEditor.handleEquationEditorValidationError( obj.message, conditionEditor.getEquationEditorValidationErrorTitle());
+						}else{
+							$(this).data("uiDialog").conditionEditor.updateCondition();
+							$(this).data("uiDialog").close();
+						}
+					
 					}
-			/* ,
-	 		        Cancel: function() {
-	 		        	$(this).data("uiDialog").close();
-	 		        }*/
-				},
-				close: function() {
-					/*form[ 0 ].reset();
-	 		        allFields.removeClass( "ui-state-error" );*/
-				}
+				}			  
 
 			});
-			// link the dialog to the outter conditionEditor
+			// link the dialog to the outer conditionEditor
 			this.dialog.data("uiDialog").conditionEditor =this;
 		}, 
+		
+		getEquationEditorValidationErrorTitle:function(){
+			return 'Validation Error';
+		},
 
+		handleEquationEditorValidationError : function(output_msg, title_msg){
+			if (!title_msg)
+		        title_msg = 'Validation Error';
+
+		    if (!output_msg)
+		        output_msg = 'No Message to Display.';
+
+		    $("<div></div>").html(output_msg).dialog({
+		        title: title_msg,
+		        resizable: false,
+		        modal: true,
+		        buttons: {
+		            "Ok": function() 
+		            {
+		                $( this ).dialog( "close" );
+		            }
+		        }
+		    });
+		},
+		
 		isNotNode:function(trNode){
 			//summary:
 			//check if it is a "NOT" operator
@@ -1245,10 +1277,21 @@
 		}, 
 
 		checkConditionValidity:function(trNode){
-			return null;
+			var equationobject = trNode.treetableArrayItem.dataItem.equationobject;
+			if (!equationobject){
+				return null;
+			}else{
+				var obj = this.checkEquationeditorValidity(equationobject);
+				if (obj){
+					obj.row = trNode;
+				}
+				return obj;
+			}
 		}, 
 
-		
+		checkEquationeditorValidity :function(equationobject){
+			return null;
+		},
 
 
 

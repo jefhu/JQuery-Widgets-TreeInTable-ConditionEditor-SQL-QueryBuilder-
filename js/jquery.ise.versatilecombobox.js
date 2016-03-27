@@ -209,6 +209,7 @@
 		                 label: newValue,
 		                 value:newValue
                       };
+				this.onValueSetCompleted(null, null, this);
 			},
 			
 			getSelectOptions: function( ) {

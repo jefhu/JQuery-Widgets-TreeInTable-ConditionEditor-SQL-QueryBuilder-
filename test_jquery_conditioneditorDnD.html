@@ -18,8 +18,16 @@
 			
 			/*This is the trick to make autocomplete menu popup properly in the dialog */
 			ul.ui-front {
-			    z-index: 1100;
+			    z-index: 1100 !important;
 			}
+			/*
+			Tthe equationedito editor has this class -- equationditorDialog
+			Without it, the autocomplete widget will be messed by jquery.ui.dialog _movetotop().   
+			*/
+			.equationditorDialog{
+				 z-index: 1100 !important;
+			}
+			/*This is the trick to make autocomplete menu popup properly in the dialog */
 						
 			
 		</style>
@@ -210,10 +218,10 @@
             var treeinTableNode =$("#treeintable3").conditioneditor({
             	store: store3,
             	metadata: metadata,
-            	checkConditionValidity : function(trNode){
+            	checkEquationeditorValidity : function(equationobject){
             	// override checkConditionValidity(). developer can customize data validation logic
             	// For example, (sourceIp1=="10.1.2.t")||matches(Name, ok) --> sourceIp1 is not in medatdata, 10.1.2.t is not a valid IP address
-        			var equationobject = trNode.treetableArrayItem.dataItem.equationobject;
+        			//var equationobject = trNode.treetableArrayItem.dataItem.equationobject;
         			var isFieldInMetaData =false;
         			var fields = metadata.fields;        			
         			for (var i=0; i< fields.length; i++){
@@ -261,7 +269,7 @@
             		if (isValueVadid && isFieldInMetaData && isOperatorValid){
         			  return null;
             		}else{
-            			obj.row = trNode;
+            			//obj.row = trNode;
             			return obj;
             		}
         		}, 
