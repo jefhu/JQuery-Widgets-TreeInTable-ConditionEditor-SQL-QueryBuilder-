@@ -53,6 +53,7 @@
         	It supports drag and drop to arrange conditions. <br>
         	Validation and configuration are driven by meta-data. Service provider controls which fields/functions are accessible to users.        	
         </p>
+       
       
 		
 		<script src="jquery-ui-1.11.4/external/jquery/jquery.js"></script>
@@ -415,20 +416,11 @@
 				// console.log(treeintableWidget3.getNexeSiblingRowItem(trNode));  
 				//console.log("getRootLevelRowItems() " + treeintableWidget3.getRootLevelRowItems());
 			};
-			treeintableWidget3.shouldThisAttributeHaveExpandie=function(attribute){
-	        // Overridable api which  determine this attribute need to present expandie icon
-				return (attribute=="expression");  // this is the column showing tree
-			};
-
-			// table headers and display attribute should be matching.
-			treeintableWidget3.getProcessAttributes=function(storeAttributes){
-			   return ['expression'];
-			   //return storeAttributes;
-			};
-			treeintableWidget3.getHeaderDisplayNames=function(){
-			   return ['Expression'];  //return ['logical',  'operator' ];
-			};
-		 
+			///* You can override conditioneditor widget API like below
+			treeintableWidget3.getEquationEditorValidationErrorTitle=function(){
+				return 'Invadid Input';
+		    },
+		    //*/
             treeintableWidget3.buildTreeTable();  
             treeintableWidget3.setTreetableDragAndDrop(); ////<------ enable Drag-and-Drop
         }

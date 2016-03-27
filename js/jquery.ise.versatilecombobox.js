@@ -17,6 +17,8 @@
  * 
  * 
  * See test_jquery_versatilecomboBox.html for detail
+ * 
+ * This code is referenced from http://codepen.io/tessa-lt/pen/nhyEC.html 
  */
 (function( $ ) {
 		$.widget( "ise.versatilecombobox", {

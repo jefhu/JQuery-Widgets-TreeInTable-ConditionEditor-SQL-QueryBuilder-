@@ -1297,8 +1297,21 @@
 		checkEquationeditorValidity :function(equationobject){
 			return null;
 		},
+		
+		shouldThisAttributeHaveExpandie: function(attribute){
+		// Overridable api which  determine this attribute need to present expandie icon
+			return (attribute=="expression");  // this is the column showing tree
+		},
 
-
+		
+		getProcessAttributes: function(storeAttributes){
+			return ['expression'];
+			//return storeAttributes;
+		},
+		
+		getHeaderDisplayNames: function(){
+			return ['Expression'];  //return ['logical',  'operator' ];
+		},
 
 		debug:false
 	});  // end widget
