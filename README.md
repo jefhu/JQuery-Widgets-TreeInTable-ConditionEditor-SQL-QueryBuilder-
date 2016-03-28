@@ -41,9 +41,17 @@ Then, you can drag and drop to re-arrange tree-nodes to make the tree look like
 &nbsp;&nbsp;&nbsp;&nbsp;priority == "5"                  
 <br/>
 <br/>
+It also supports function expression such as "matches(DepartName, "Finance") && (Bonus > 10000)", where "matches" is a built-in function.
+<br/>
+This widget is meta-data driven. You have total control of what fields and build-in function are accessible, what operators and value are available based on user-role and service context.
+<br/>
+<br/>
+This is an ideal tool for company to offer data search and data analysis services.  
+<br/>
+<br/>
 <a href="http://upload.newmusicland.com/files/jquery-treeintable/test_jquery_conditioneditorDnD.html" target="_blank">See Condition Editor demo here</a>
 
-All of these these widgets are based on jquery.ui.Factory.  It means they are 100% extendable. 
+All of these these widgets are based on jquery.ui.Factory.  It means they are written in Object-Oriented fashion and 100% extendible. 
 
 <a href="http://upload.newmusicland.com/files/jquery-treeintable/index.html" target="_blank">Demo Program Link</a>
 
