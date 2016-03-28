@@ -1,4 +1,4 @@
-JQuery-Datastore-and-TreeInTable-Widgets
+JQuery Datastore, TreeInTable, Condition-Editor (SQL Query-Builder) Widgets
 ========================================
 
 There are several widgets in this repository. The first widget is "datastore"  which knows how to retrieve json data and let you manipulate data. 
@@ -51,7 +51,7 @@ It also supports function expression such as "matches(DepartName, "Finance") && 
 This widget is meta-data driven. You have total control of what fields and build-in function are accessible, what operators and value are available based on user-role and service context.  For example, my company is servicing client-A. I let client-A user to search data using the condition-editor widget. Based on service package, I  only allow client-A to access fields [f1, f2.. fn] and use built-in function [fn1, fn2, ..,fn10].  While configuring search criteria, if user selects "f2" field, I can load the proper operators and built-in functions to the operator combo-box.  Once user selects an operator, I can further control what values to load to the value combo box. Data-validation API will enforce data integrity and rules compliance. Please see the demo for details. 
 <br/>
 <br/>
-This is an ideal tool for company to offer data search and data analysis services.  
+This is an ideal query-builder tool for company to offer data search and data analysis services.  
 <br/>
 <br/>
 <a href="http://upload.newmusicland.com/files/jquery-treeintable/test_jquery_conditioneditorDnD.html" target="_blank">See Condition Editor demo here</a>
