@@ -222,16 +222,12 @@
             	checkEquationeditorValidity : function(equationobject){
             	// override checkConditionValidity(). developer can customize data validation logic
             	// For example, (sourceIp1=="10.1.2.t")||matches(Name, ok) --> sourceIp1 is not in medatdata, 10.1.2.t is not a valid IP address
-        			//var equationobject = trNode.treetableArrayItem.dataItem.equationobject;
-        			var isFieldInMetaData =false;
-        			var fields = metadata.fields;        			
-        			for (var i=0; i< fields.length; i++){
-        				if (equationobject.left  == fields[i].value){
-        					isFieldInMetaData = true;
-        					break;
-        				}
-        			}
-        			var obj ={};	
+        			
+            		var obj ={};	
+            	
+            	    //check if FIELD input is in meta-data
+            	    var isFieldInMetaData = this.metadataUtil.isItemInMetaData("fields", "value", equationobject.left);       			
+        			
         			
         			if (!isFieldInMetaData){	     
         				var msg ="[" +equationobject.left + "] is not known.  It is not in the metadata list";	   
@@ -240,14 +236,9 @@
         			
         			// validate if the operator is valid
         			// For example: matchesXXX(Name, ok)  --> "matchesXXX" is not a supported function
-        			var isOperatorValid =false;
+        			var isOperatorValid =this.metadataUtil.isItemInMetaData("operators", "value", equationobject.operator);      
         			var ops = metadata.operators;        			
-        			for (var i=0; i< ops.length; i++){
-        				if (equationobject.operator  == ops[i].value){
-        					isOperatorValid=true;
-        					break;
-        				}
-        			}
+        			
         			if (!isOperatorValid){	          				
 	    				var msg = "[" + equationobject.operator + "] is not a supported function.  It is not in the metadata list";	  
 	    				obj.message = (obj.message) ? obj.message + " " + msg  : msg;
@@ -259,6 +250,12 @@
         			// you can right code to check equationobject.right is correct 
         			//For example (sourceIp1=="10.1.2.t") 10.1.2.t is not a valid IP address
         			if ( equationobject.left=="sourceIp" ||  equationobject.left=="targetIp"){
+        				
+        				if (this.metadataUtil.isItemInMetaData("fields", "value", equationobject.right)){
+        					// if user pick "targetIp" in the value combobox. It means [sourceIp] matches [targetIp].  This is a valid case
+        					return null;
+        				}      
+        				
         				var ipformat = /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/;
 	        			var ipformat2 = /^(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;  
 	        			var ipformat3 = /^(([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;

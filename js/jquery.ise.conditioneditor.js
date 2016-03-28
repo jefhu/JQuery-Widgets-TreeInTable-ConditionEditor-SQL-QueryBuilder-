@@ -119,7 +119,20 @@
 						}
 					}
 					return fields;
+				},
+				
+				isItemInMetaData:function( type, attributeName, inputvalue){
+					var isTypeInMetaData =false;
+        			var fields = metadata[type];        			
+        			for (var i=0; fields && i< fields.length; i++){
+        				if (inputvalue  == fields[i][attributeName]){
+        					isTypeInMetaData = true;
+        					break;
+        				}
+        			}
+        			return isTypeInMetaData;
 				}
+				
 		},
 
 		
