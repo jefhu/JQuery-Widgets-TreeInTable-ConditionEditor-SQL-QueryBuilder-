@@ -41,6 +41,10 @@ Then, you can drag and drop to re-arrange tree-nodes to make the tree look like
 &nbsp;&nbsp;&nbsp;&nbsp;priority == "5"                  
 <br/>
 <br/>
+
+<img src="Condition-Editor_Widget.png"/>
+<br/>
+<br/>
 It also supports function expression such as "matches(DepartName, "Finance") && (Bonus > 10000)", where "matches" is a built-in function.
 <br/>
 This widget is meta-data driven. You have total control of what fields and build-in function are accessible, what operators and value are available based on user-role and service context.  For example, my company is servicing client-A. I let client-A user to search data using the condition-editor widget. Based on service package, I  only allow client-A to access fields [f1, f2.. fn] and use built-in function [fn1, fn2, ..,fn10].  While configuring search criteria, if user selects "f2" field, I can load the proper operators and built-in functions to the operator combo-box.  Once user selects an operator, I can further control what values to load to the value combo box. Data-validation API will enforce data integrity and rules compliance. Please see the demo for details. 
