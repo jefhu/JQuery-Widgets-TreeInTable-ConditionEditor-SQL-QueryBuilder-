@@ -41,7 +41,8 @@ Then, you can drag and drop to re-arrange tree-nodes to make the tree look like
 &nbsp;&nbsp;&nbsp;&nbsp;priority == "5"                  
 <br/>
 <br/>
-
+<img src="Condition-Editor-ExpressionHiearchy.png"/>
+<br/>
 <img src="Condition-Editor_Widget.png"/>
 <br/>
 <br/>
