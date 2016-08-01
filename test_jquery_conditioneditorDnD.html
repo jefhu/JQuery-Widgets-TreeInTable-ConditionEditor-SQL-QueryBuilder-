@@ -39,7 +39,7 @@
     	<p>
     	Write you search criteria below and click "Parse Expression To Condition Tree" button.
     	</p>    	
-        <textarea rows="20" cols="50" id="textarea" >(sourceIp=="10.1.2.49")||(priority >= 1 )&& (device !="linksys")</textarea>
+        <textarea rows="15" cols="50" id="textarea" >(sourceIp=="10.1.2.49")||(priority >= 1 )&& (device !="linksys")</textarea>
         <br/><br/> 
         <input class ="buttonclass" type="button" id="load" value="Parse Expression To Condition Tree" style="width ="/>
          <br/><br/>
@@ -51,7 +51,11 @@
         	This widget enables user to configure data search criteria. <br> 
         	User can write down search criteria and let the widget parse the string expression to Condition-Editor-Tree.<br>
         	It supports drag and drop to arrange conditions. <br>
-        	Validation and configuration are driven by meta-data. Service provider controls which fields/functions are accessible to users.        	
+        	Validation and configuration are driven by meta-data. Service provider controls which fields/functions are accessible to users.   
+        	<br/>
+        	This widget can parse expression such as -- <b> startsWith(Name, "world") && endsWith(device, " .com") </b>	
+        	<br/>
+        	Search criteria can be format as a JSON string. Application can submit this JSON String to server to validate input or process data.
         </p>
        
       
@@ -299,8 +303,12 @@
         				}
         			}
         			if (opType && opType !="numerical"){
-        				return  operator + "( " + opLeft.name + " ," + opRight.value + ")" ;
-        			}
+        				var temp = opRight.value;
+        				if (temp.startsWith(".")){
+    						temp =  "\""  + temp  + "\"";
+    					}
+        				return  operator + "( " + opLeft.name + " ," + temp + ")" ;
+        			}        
         			return  dataItem.expression;
             	},
             	onEquationEditoronFormCreateComplete:function(conditioneditor, equationeditor, fieldwidget, operatorwidget, valuewidget){

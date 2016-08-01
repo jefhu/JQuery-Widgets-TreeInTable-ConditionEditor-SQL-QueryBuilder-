@@ -351,6 +351,7 @@
 			var leftValue =null;
 			for (var i=0; i<argumentsList.length; i++){
 				var temp = (argumentsList[i].name != undefined)? argumentsList[i].name: argumentsList[i].value;
+				temp = temp.trim();
 				if (i==0){
 					leftValue =temp;
 					parameters = temp;
