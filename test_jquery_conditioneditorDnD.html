@@ -329,23 +329,24 @@
     						// if (fieldObj.type == "string") --> fill operatorwidget.selectOptions with "startsWith, endsWith..., etc"						
     						operatorwidget.selectOptions =  conditioneditor.metadataUtil.getOperatorsByType(fieldObj.type);
     						operatorwidget.selectOptions= operatorwidget.selectOptions.concat( conditioneditor.metadataUtil.getOperatorsByType("boolean"));
-    					}					
+    										
     					
-    					if (fieldObj.type != "boolean"){
-    						// say user picks "name" field (a string type field),  we want to populate value-combo with all string type fields except "name"
-    						var typeFields =   conditioneditor.metadataUtil.getFieldsByType(fieldObj.type);
-    						var idx = typeFields.indexOf(fieldObj);
-    						typeFields.splice(idx, 1);
-    						valuewidget.selectOptions = typeFields;
-    					}	
-    					
-    					///*  We can examine every select field's value and update operator-combo and value-combo accordingly.
-    					if (fieldValue.value == "name"){
-    						// write you business logic
-    						//operatorwidget.selectOptions = ...
-    						//valuewidget.selectOptions  = .. 
-    					}else{
-    						// write you businese logic ...
+	    					if (fieldObj.type != "boolean"){
+	    						// say user picks "name" field (a string type field),  we want to populate value-combo with all string type fields except "name"
+	    						var typeFields =   conditioneditor.metadataUtil.getFieldsByType(fieldObj.type);
+	    						var idx = typeFields.indexOf(fieldObj);
+	    						typeFields.splice(idx, 1);
+	    						valuewidget.selectOptions = typeFields;
+	    					}	
+	    					
+	    					///*  We can examine every select field's value and update operator-combo and value-combo accordingly.
+	    					if (fieldValue.value == "name"){
+	    						// write you business logic
+	    						//operatorwidget.selectOptions = ...
+	    						//valuewidget.selectOptions  = .. 
+	    					}else{
+	    						// write you businese logic ...
+	    					}
     					}
     					
     					//*/

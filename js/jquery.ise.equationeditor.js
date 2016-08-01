@@ -5,6 +5,14 @@
  * Copyright 2015, Jie Jeffery Hu
  * Dual licensed under the MIT 
  */
+
+/**
+ *  jquery.ise.equationeditor hosts three jquery.ise.versatilecombobox widgets.
+ *  
+ *  It is used to configure equation such as Field-1 >0 10.  
+ *  jquery.ise.conditioneditor uses this widget.  
+ *  
+ */
 (function($) {
 	
 	$.widget( "ise.equationeditor", {
@@ -132,18 +140,27 @@
 			if (this.debug) console.log(JSON.stringify(widget.selectedValue));
 		},
 		
+		/**
+		 * get Field Widget
+		 */
 		getFieldWidget :function(){
 			var nodeField = 	$(this.fieldInput )[0];
 			var fieldwidget =$(nodeField).data("iseVersatilecombobox");
 			return fieldwidget;
 		},
 		
+		/**
+		 * get Operator Widget
+		 */
 		getOperatorWidget :function(){
 			var nodeField = 	$(this.operatorInput )[0];
 			var fieldwidget =$(nodeField).data("iseVersatilecombobox");
 			return fieldwidget;
 		},
 		
+		/**
+		 * get Value Wdiget
+		 */
 		getValueWidget :function(){
 			var nodeField = 	$(this.valueInput )[0];
 			var fieldwidget =$(nodeField).data("iseVersatilecombobox");

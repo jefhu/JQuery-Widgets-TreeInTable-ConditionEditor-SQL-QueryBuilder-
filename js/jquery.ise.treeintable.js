@@ -896,7 +896,8 @@ console.log(  treeintableWidget3.getRootLevelRowItems());
 	    },
 	    
 	    setTreetableDragOne:function(trNode){
-	    	trNode.treeintableWidget = this;
+	    	//trNode.treeintableWidget = this;
+	    	var self = this;
 			$(trNode).each(function(index, obj) {
 				
 				$(obj).draggable({
@@ -906,7 +907,7 @@ console.log(  treeintableWidget3.getRootLevelRowItems());
 					  revert: "invalid",
 					  revertDuration: 300,
 					  scroll: true,
-					  containment:  obj.treeintableWidget.getDragContainment()  // '.cpmTable'
+					  containment: self.getDragContainment() // obj.treeintableWidget.getDragContainment()  // '.cpmTable'
 					});
 			});
 	    },
@@ -920,18 +921,20 @@ console.log(  treeintableWidget3.getRootLevelRowItems());
 	    },
 	    
 	    setTreetableDropOne:function(trNode){
-	    	trNode.treeintableWidget = this;
+	    	//trNode.treeintableWidget = this;
+	    	var self = this;
 	    	$(trNode).each(function(index, obj) {
 				//console.log(obj);
 				$(obj).droppable({
 				   // accept: ".cpmtableItemNormal",
 				    accept: function( draggable, droppable){
-				    	var treeintableWidget = obj.treeintableWidget;
-				    	return treeintableWidget.checkIfRowItemIsDraggable();
+				    	/*var treeintableWidget = obj.treeintableWidget;
+				    	return treeintableWidget.checkIfRowItemIsDraggable();*/
+				    	return self.checkIfRowItemIsDraggable();
 				    },
 				    drop: function(e, ui) {
 				      var dragEl = ui.draggable[0];  // get the on-the-drag tr
-				      var treeintableWidget = dragEl.treeintableWidget;
+				      var treeintableWidget = self; //dragEl.treeintableWidget;
 				      var dropToNode = this;  // here "this" is the drop-to tr. 
 				      //check dragEl can not be dropped to its subTree() list.
 				      if(treeintableWidget.checkIfRowItemCanDropHere(dragEl ,dropToNode)){
@@ -942,7 +945,7 @@ console.log(  treeintableWidget3.getRootLevelRowItems());
 				    hoverClass: "accept",
 				    over: function(e, ui) {
 				    	var dragEl = ui.draggable[0];  // get the on-the-drag tr
-				    	var treeintableWidget = dragEl.treeintableWidget;
+				    	var treeintableWidget = self; //dragEl.treeintableWidget;
 					    var dropToNode = this;  // here "this" is the drop-to tr. 
 					    if (!dropToNode.treetableArrayItem.isLeafNode && ! dropToNode.treetableArrayItem.expanded){
 					    	treeintableWidget.expandOrCollapseByRowitem(dropToNode, dropToNode.expandieWidget);

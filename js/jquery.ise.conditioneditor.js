@@ -355,13 +355,17 @@
 					leftValue =temp;
 					parameters = temp;
 				}else{
-					parameters = parameters + "," + temp;
+					if (temp.startsWith(".")){
+						parameters = parameters + ", \""  + temp  + "\"";
+					}else{
+						parameters = parameters + "," + temp;
+					}
 				}
 			}
 			var leftSide = funName + "(" + parameters + ")";
 			this._makeEquationObject(currentItem, leftValue, funName, parameters);
 			return leftSide;
-			
+
 		},
 
 		isParentItem :function(dataItem){
@@ -1026,12 +1030,37 @@
 			currentItem.dataItem.right.value = inputValue;			
 			currentItem.dataItem.operator = inputOperator;
 
-			var expressionString =  inputFieldName + " " + inputOperator + " \"" + inputValue + "\"";
+			var expressionString = this.buildExpressionStringOnUpdateConditionEditor(inputFieldName,inputOperator ,inputValue );  //inputFieldName + " " + inputOperator + " \"" + inputValue + "\"";
 			currentItem.dataItem['expression']=expressionString;
 			this._makeEquationObject(currentItem, inputFieldName, inputOperator, inputValue);
 			$(this.selectedRow).find("td")[0].textNode.nodeValue=expressionString;
 
 		},
+		
+		buildExpressionStringOnUpdateConditionEditor:function(inputFieldName,inputOperator ,inputValue  ){			
+			var isInFunctionList = this.isFunctionOperator(inputOperator);
+			var expressionString =  inputFieldName + " " + inputOperator + " \"" + inputValue + "\"";
+			if (isInFunctionList){
+				var	parameters = inputFieldName;
+				parameters = parameters + ", \"" + inputValue + "\"";
+				var expressionString = inputOperator + "(" + parameters + ")";
+			}		
+			return expressionString;
+		}, 		
+		
+		isFunctionOperator:function(inputOperator){
+			var funcList =this.metadataUtil.getOperatorsByType('string');
+			var isInFunctionList = false;
+			for (var i=0; i<funcList.length; i++){
+				if (funcList[i].label==inputOperator){
+					isInFunctionList = true;
+					break;
+				}
+			} 
+			return isInFunctionList;
+		},
+		
+		
 		
 		getValueFromEquationEditor(type){
 			var contentNode = $(this.dialog);
