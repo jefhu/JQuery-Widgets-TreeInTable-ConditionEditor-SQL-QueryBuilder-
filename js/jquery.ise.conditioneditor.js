@@ -351,12 +351,12 @@
 			var leftValue =null;
 			for (var i=0; i<argumentsList.length; i++){
 				var temp = (argumentsList[i].name != undefined)? argumentsList[i].name: argumentsList[i].value;
-				temp = temp.trim();
+				temp = temp.hasOwnProperty("trim")? temp.trim(): temp;
 				if (i==0){
 					leftValue =temp;
 					parameters = temp;
 				}else{
-					if (temp.startsWith(".")){
+					if ( temp.hasOwnProperty("startsWith") && temp.startsWith(".")){
 						parameters = parameters + ", \""  + temp  + "\"";
 					}else{
 						parameters = parameters + "," + temp;

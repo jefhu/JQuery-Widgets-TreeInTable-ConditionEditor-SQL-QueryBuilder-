@@ -53,7 +53,12 @@
         	It supports drag and drop to arrange conditions. <br>
         	Validation and configuration are driven by meta-data. Service provider controls which fields/functions are accessible to users.   
         	<br/>
-        	This widget can parse expression such as -- <b> startsWith(Name, "world") && endsWith(device, " .com") </b>	
+        	This widget can parse expression such as <br/>
+        	 <b> startsWith(Name, "world") && endsWith(device, " .com") </b>
+        	 <br/>
+        	 <b>dayDiffGT(createDay, $NOW,10)</b>	 (Using variable $NOW.)  
+        	<br/>
+        	Application should implement checkEquationeditorValidity() API.
         	<br/>
         	Search criteria can be format as a JSON string. Application can submit this JSON String to server to validate input or process data.
         </p>
@@ -230,7 +235,7 @@
             		var obj ={};	
             	
             	    //check if FIELD input is in meta-data
-            	    var isFieldInMetaData = this.metadataUtil.isItemInMetaData("fields", "value", equationobject.left);       			
+            	    var isFieldInMetaData =isFieldInMetaData = equationobject.left.startsWith("$")? true: this.metadataUtil.isItemInMetaData("fields", "value", equationobject.left);    			
         			
         			
         			if (!isFieldInMetaData){	     
@@ -375,7 +380,7 @@
     					var fieldValue = fieldwidget.selectedValue;
     					var operatorValue = operatorwidget.selectedValue;
     					var operatorObj =   conditioneditor.metadataUtil.getOperatorObject(operatorValue, "value");
-    					if (operatorObj.type == "boolean"){
+    					if (operatorObj && operatorObj.type == "boolean"){
     						var nullFields =[{
 				    		            		"label": "null",
 				    		            		"value": "null"
