@@ -256,6 +256,13 @@
         			
         			
         			var isValueVadid =true;
+        			
+        			if (!equationobject.right){
+        				//ensure value must have input
+        				var msg ="[" +equationobject.left + "] must have input value";   
+	    				obj.message = (obj.message) ? obj.message + " " + msg  : msg;
+	    				return obj;
+        			}
         			// you can right code to check equationobject.right is correct 
         			//For example (sourceIp1=="10.1.2.t") 10.1.2.t is not a valid IP address
         			if ( equationobject.left=="sourceIp" ||  equationobject.left=="targetIp"){
@@ -283,13 +290,16 @@
         		}, 
             	getValueFromEquationEditor(type){  
         		// override getValueFromEquationEditor(), this api controls what value to populate to equation-editor (where user configurs something like "a>b")
-            		var equationeditorWidget = this.equationeditor.data("iseEquationeditor");  
+            		if (!this.equationeditor) return null;
+        		    var equationeditorWidget = this.equationeditor.data("iseEquationeditor");          		   
+        		    if (!equationeditorWidget) return null;
+        		    
                     if (type=="field"){
                     	return equationeditorWidget.getFieldWidget().selectedValue.value;
                     }else if (type=="operator"){
                     	return equationeditorWidget.getOperatorWidget().selectedValue.value;
-                    }else if (type=="value"){
-                    	return equationeditorWidget.getValueWidget().selectedValue.value;
+                    }else if (type=="value"){                    	
+                    	return (equationeditorWidget.getValueWidget().selectedValue)? equationeditorWidget.getValueWidget().selectedValue.value: null;
                     }
         			return null;
         		}, 

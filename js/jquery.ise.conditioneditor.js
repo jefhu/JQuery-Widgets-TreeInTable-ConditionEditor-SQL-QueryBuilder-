@@ -1115,23 +1115,30 @@
 				modal: true,	
 				title:this.getConditionEditorDialogTitle(),
 				buttons: {
-					OK: function() {
-						//retrieve the conditionEditor and call its updateConditon() api
-						var inputFieldName =conditionEditor.getValueFromEquationEditor("field") ;
-						var inputOperator  =conditionEditor.getValueFromEquationEditor("operator") ;
-						var inputValue     =conditionEditor.getValueFromEquationEditor("value") ;
-
-						var equationobject ={};
-						equationobject.left=inputFieldName;
-						equationobject.operator = inputOperator;
-						equationobject.right= inputValue;
-						
-						var obj = conditionEditor.checkEquationeditorValidity(equationobject);
-						if (obj){
-							conditionEditor.handleEquationEditorValidationError( obj.message, conditionEditor.getEquationEditorValidationErrorTitle());
-						}else{
+					OK: function() {						
+						if (conditionEditor.isParentItem(conditionEditor.selectedRow.treetableArrayItem.dataItem)){
+							// it is AND/OR/NOT operator
 							$(this).data("uiDialog").conditionEditor.updateCondition();
 							$(this).data("uiDialog").close();
+							conditionEditor.validate();
+						}else{
+							//retrieve the conditionEditor and call its updateConditon() api
+							var inputFieldName =conditionEditor.getValueFromEquationEditor("field") ;
+							var inputOperator  =conditionEditor.getValueFromEquationEditor("operator") ;
+							var inputValue     =conditionEditor.getValueFromEquationEditor("value") ;
+
+							var equationobject ={};
+							equationobject.left=inputFieldName;
+							equationobject.operator = inputOperator;
+							equationobject.right= inputValue;
+
+							var obj = conditionEditor.checkEquationeditorValidity(equationobject);
+							if (obj){
+								conditionEditor.handleEquationEditorValidationError( obj.message, conditionEditor.getEquationEditorValidationErrorTitle());
+							}else{
+								$(this).data("uiDialog").conditionEditor.updateCondition();
+								$(this).data("uiDialog").close();
+							}
 						}
 					
 					}
